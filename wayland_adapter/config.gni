@@ -12,7 +12,7 @@
 # limitations under the License.
 
 declare_args() {
-  ft_enable_gpu = false
+  ft_enable_gpu = true
 }
 
 if (ft_enable_gpu) {
