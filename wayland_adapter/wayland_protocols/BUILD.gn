@@ -11,21 +11,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-title = "Fangtian System Dependencies"
+import("//build/gn/fangtian.gni")
+import("//config.gni")
 
-[dependencies]
-supported_os = ["openeuler"]
+config("wayland_public_config") {
+  include_dirs = [ "stable/xdg-shell" ]
+  include_dirs += [ "unstable" ]
+}
 
-[dependencies.openeuler]
-supported_version = ["22.03"]
-
-[openeuler."22.03"]
-package_deps = [
-    "clang",
-    "compiler-rt",
-    "llvm-devel",
-    "python3",
-    "tar",
-    "cmake",
-    "wayland-devel",
-]
+ft_source_set("wayland_protocols_sources") {
+  sources = [ "stable/xdg-shell/xdg-shell-protocol.c" ]
+  sources += [ "unstable/xdg-output-unstable-v1-protocol.c" ]
+  public_configs = [ ":wayland_public_config" ]
+}
