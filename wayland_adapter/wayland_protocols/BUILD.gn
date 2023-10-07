@@ -12,7 +12,6 @@
 # limitations under the License.
 
 import("//build/gn/fangtian.gni")
-import("//config.gni")
 
 config("wayland_public_config") {
   include_dirs = [ "stable/xdg-shell" ]

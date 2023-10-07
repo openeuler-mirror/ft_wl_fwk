@@ -12,7 +12,6 @@
 # limitations under the License.
 
 import("//build/gn/fangtian.gni")
-import("//config.gni")
 
 ft_executable("wayland_demo") {
   sources = [ "wayland_demo.cpp" ]
@@ -23,7 +22,7 @@ ft_executable("wayland_demo") {
 
   deps = [
     "//build/gn/configs/system_libs:skia",
-    "//display_server/drivers/hal/base:ft_event_loop",
+    "//event_loop:ft_event_loop",
     "//wayland_adapter/wayland_protocols:wayland_protocols_sources",
   ]
 }

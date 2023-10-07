@@ -25,6 +25,8 @@
 
 #include "ui/rs_surface_node.h"
 #include "render_context/render_context.h"
+#include "SkCanvas.h"
+#include "SkBitmap.h"
 
 namespace FT {
 namespace Wayland {

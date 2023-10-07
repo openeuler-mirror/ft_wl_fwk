@@ -12,7 +12,6 @@
 # limitations under the License.
 
 import("//build/gn/fangtian.gni")
-import("//config.gni")
 
 config("wayland_utils_public_config") {
   include_dirs = [ "include" ]
@@ -20,18 +19,18 @@ config("wayland_utils_public_config") {
 
 ft_source_set("wayland_adapter_utils_sources") {
   sources = [
+    "src/wayland_event_loop.cpp",
     "src/wayland_global.cpp",
+    "src/wayland_keycode_trans.cpp",
     "src/wayland_objects_pool.cpp",
     "src/wayland_resource_object.cpp",
-    "src/wayland_keycode_trans.cpp",
-    "src/wayland_event_loop.cpp",
   ]
 
   public_configs = [ ":wayland_utils_public_config" ]
 
   deps = [
-    "//build/gn/configs/system_libs:mmi",
     "//build/gn/configs/system_libs:hilog",
-    "//display_server/drivers/hal/base:ft_event_loop",
+    "//build/gn/configs/system_libs:mmi",
+    "//event_loop:ft_event_loop",
   ]
 }

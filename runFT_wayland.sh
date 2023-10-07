@@ -11,6 +11,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-group("ft_wl_fwk") {
-  deps = [ "//wayland_adapter:libwayland_adapter" ]
-}
+
+sa_main /usr/local/share/ft/ft_wl.xml

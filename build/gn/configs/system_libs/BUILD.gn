@@ -12,36 +12,157 @@
 # limitations under the License.
 
 config("c_utils_config") {
-    include_dirs = [ "${sys_inc}/c_utils" ]
-    libs = [ "utils", "sec_shared" ]
+  visibility = [ ":*" ]
+
+  include_dirs = [ "${sys_inc}/c_utils" ]
+  libs = [ "utils", "sec_shared" ]
 }
 
 config("ipc_core_config") {
-    include_dirs = [ "${sys_inc}/ipc_core" ]
-    libs = [ "ipc_core" ]
+  visibility = [ ":*" ]
+
+  include_dirs = [ "${sys_inc}/ipc_core" ]
+  libs = [ "ipc_core" ]
 }
 
 config("hilog_config") {
-    include_dirs = [ "${sys_inc}/hilog" ]
-    libs = [ "hilog" ]
+  visibility = [ ":*" ]
+
+  include_dirs = [ "${sys_inc}/hilog" ]
+  libs = [ "hilog" ]
 }
 
 config("hitrace_meter_config") {
-    include_dirs = [ "${sys_inc}/hitrace_meter" ]
-    libs = [ "hitrace_meter" ]
+  visibility = [ ":*" ]
+
+  include_dirs = [ "${sys_inc}/hitrace_meter" ]
+  libs = [ "hitrace_meter" ]
 }
 
 config("eventhandler_config") {
-    include_dirs = [ "${sys_inc}/eventhandler" ]
-    libs = [ "eventhandler" ]
+  visibility = [ ":*" ]
+
+  include_dirs = [ "${sys_inc}/eventhandler" ]
+  libs = [ "eventhandler" ]
 }
 
 config("skia_config") {
-    include_dirs = [ "${sys_inc}/skia" ]
-    libs = [ "ace_skia_fangtian" ]
+  visibility = [ ":*" ]
+
+  include_dirs = [
+    "${sys_inc}/skia",
+    "${sys_inc}/skia/include",
+    "${sys_inc}/skia/include/core"
+  ]
+  libs = [ "ace_skia_fangtian" ]
 }
 
 config("samgr_config") {
-    include_dirs = [ "${sys_inc}/samgr" ]
-    libs = [ "samgr_proxy" ]
+  visibility = [ ":*" ]
+
+  include_dirs = [ "${sys_inc}/samgr" ]
+  libs = [ "samgr_proxy" ]
+}
+
+config("image_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [ "${sys_inc}/image" ]
+  libs = [ "image_native" ]
+}
+
+config("mmi_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [ "${sys_inc}/mmi" ]
+  libs = [ "mmi-client" ]
+}
+
+config("safwk_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [ "${sys_inc}/safwk" ]
+  libs = [ "system_ability_fwk" ]
+}
+
+config("ft_engine_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [
+    "/usr/include/ft/wm",
+    "/usr/include/ft/dm",
+  ]
+  libs = [ "wm", "dm", "render_service_client", "render_service_base", "frame_analyzer", "surface" ]
+}
+
+group("c_utils") {
+  public_configs = [ ":c_utils_config" ]
+}
+
+group("hilog") {
+  public_configs = [ ":hilog_config" ]
+}
+
+group("ipc_core") {
+  public_deps = [ ":c_utils" ]
+  public_configs = [ ":ipc_core_config" ]
+}
+
+group("eventhandler") {
+  public_deps = [
+    ":c_utils",
+    ":hilog",
+  ]
+  public_configs = [ ":eventhandler_config" ]
+}
+
+group("hitrace_meter") {
+  public_deps = [ ":c_utils" ]
+  public_configs = [ ":hitrace_meter_config" ]
+}
+
+group("samgr") {
+  public_deps = [ ":c_utils" ]
+  public_configs = [ ":samgr_config" ]
+}
+
+group("image") {
+  public_deps = [
+    ":hilog",
+    ":hitrace_meter",
+    ":c_utils",
+    ":ipc_core",
+  ]
+  public_configs = [ ":image_config" ]
+}
+
+group("mmi") {
+  public_deps = [
+    ":c_utils",
+    ":hilog",
+  ]
+  public_configs = [ ":mmi_config" ]
+}
+
+group("skia") {
+  public_configs = [ ":skia_config" ]
+}
+
+group("safwk") {
+  public_deps = [
+    ":c_utils",
+    ":ipc_core",
+    ":samgr"
+  ]
+  public_configs = [ ":safwk_config" ]
+}
+
+group("ft_engine") {
+  public_deps = [
+    ":eventhandler",
+    ":safwk",
+    ":mmi",
+    ":image",
+  ]
+  public_configs = [ ":ft_engine_config" ]
 }
