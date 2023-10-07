@@ -11,6 +11,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-group("ft_wl_fwk") {
-  deps = [ "//wayland_adapter:libwayland_adapter" ]
+declare_args() {
+  ft_enable_gpu = true
+}
+
+if (ft_enable_gpu) {
+  wl_enable_gpu = true
+} else {
+  wl_enable_gpu = false
 }
