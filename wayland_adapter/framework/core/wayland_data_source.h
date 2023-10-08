@@ -17,7 +17,7 @@
 
 #include <wayland-server-protocol.h>
 #include "wayland_resource_object.h"
-#include "wayalnd_utils.h"
+#include "wayland_utils.h"
 
 namespace FT {
 namespace Wayland {

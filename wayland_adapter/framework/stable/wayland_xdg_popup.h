@@ -18,7 +18,7 @@
 #include <xdg-shell-server-protocol.h>
 #include "wayland_resource_object.h"
 #include "wayland_xdg_positioner.h"
-#include "wayalnd_utils.h"
+#include "wayland_utils.h"
 
 namespace FT {
 namespace Wayland {

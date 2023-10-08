@@ -52,6 +52,13 @@ class Builder:
             exec_sys_command(['rm', '-f', os.path.join(self.project_dir, 'compile_commands.json')])
             return exec_sys_command(['cp', os.path.join(self.build_output_dir, 'compile_commands.json'), self.project_dir])[0]
 
+        common_output_dir = os.path.join(self.build_output_dir, 'common/common/')
+        output_files = [entry for entry in os.listdir(common_output_dir) if os.path.isfile(os.path.join(common_output_dir, entry))]
+        for output_file in output_files:
+            if self.args.install:
+                rst = exec_sys_command(['sudo', 'cp', '-f', os.path.join(self.build_output_dir, 'common/common/', output_file), os.path.join(self.args.install, 'lib64')])
+                if rst[0] == False : return False
+
         return True
 
     def launch_gn(self) -> bool:

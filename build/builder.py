@@ -123,6 +123,12 @@ class FtBuilder:
         build_parser.add_argument('--use-musl',
                                 action='store_true',
                                 help='Add musl k-v to toml file.')
+        build_parser.add_argument('-i', '--install',
+                                type=str,
+                                default='',
+                                nargs='?',
+                                const='/usr',
+                                help='Install all librarys & binarys to specify dir(default is /usr).')
 
         package_prepare_parser = package_subparsers.add_parser('generate', help='Setup rpm tree & Generate spec file & Build the RPM package.')
         package_prepare_parser.add_argument('--target-dir',

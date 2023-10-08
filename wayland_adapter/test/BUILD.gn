@@ -21,6 +21,7 @@ ft_executable("wayland_demo") {
   libs = [ "wayland-client" ]
 
   deps = [
+    "//build/gn/configs/system_libs:c_utils",
     "//build/gn/configs/system_libs:skia",
     "//event_loop:ft_event_loop",
     "//wayland_adapter/wayland_protocols:wayland_protocols_sources",
