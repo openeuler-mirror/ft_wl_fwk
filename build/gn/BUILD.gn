@@ -12,5 +12,8 @@
 # limitations under the License.
 
 group("ft_wl_fwk") {
-  deps = [ "//wayland_adapter:libwayland_adapter" ]
+  deps = [
+    "//wayland_adapter:libwayland_adapter",
+    "//wayland_adapter/test:wayland_demo",
+  ]
 }

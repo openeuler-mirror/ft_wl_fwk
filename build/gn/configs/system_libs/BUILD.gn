@@ -89,8 +89,19 @@ config("ft_engine_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
+    "/usr/include/ftsurface",
+    "/usr/include/ft",
     "/usr/include/ft/wm",
     "/usr/include/ft/dm",
+    "/usr/include/ft/utils",
+    "/usr/include/ft/display_server/core",
+    "/usr/include/ft/display_server/surface",
+    "/usr/include/ft/display_server/common",
+    "/usr/include/ft/display_server/drivers",
+    "/usr/include/ft/display_server/buffer_handle",
+    "/usr/include/ft/display_server/base",
+    "/usr/include/ft/display_server",
+    "/usr/include/ft/display_server/render_context",
   ]
   libs = [ "wm", "dm", "render_service_client", "render_service_base", "frame_analyzer", "surface" ]
 }

@@ -59,4 +59,7 @@ echo -e "\e[36m[-] Prepare system packages...\e[0m"
 # Check & Install required system packages
 python3 ${PROJECT_DIR}/build/builder.py check --install-packages $*
 
+# copy sa file to /usr/local/share/ft/
+sudo cp -fr ${PROJECT_DIR}/etc/ft_wl.xml /usr/local/share/ft/
+
 echo -e "\033[32m[*] Pre-build Done. You need exec 'build.sh'.\033[0m"

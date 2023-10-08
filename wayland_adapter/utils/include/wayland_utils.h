@@ -19,7 +19,7 @@
 
 #include <include/core/SkImageInfo.h>
 #include "wayland-server-protocol.h"
-#include "window.h"
+#include "wm/window.h"
 
 namespace FT {
 namespace Wayland {
