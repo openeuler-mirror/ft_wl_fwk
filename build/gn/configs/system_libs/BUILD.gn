@@ -94,14 +94,14 @@ config("ft_engine_config") {
     "/usr/include/ft/wm",
     "/usr/include/ft/dm",
     "/usr/include/ft/utils",
-    "/usr/include/ft/display_server/core",
-    "/usr/include/ft/display_server/surface",
-    "/usr/include/ft/display_server/common",
-    "/usr/include/ft/display_server/drivers",
-    "/usr/include/ft/display_server/buffer_handle",
-    "/usr/include/ft/display_server/base",
-    "/usr/include/ft/display_server",
-    "/usr/include/ft/display_server/render_context",
+    "/usr/include/ft/render_service_client/core",
+    "/usr/include/ft/render_service_client/surface",
+    "/usr/include/ft/render_service_client/common",
+    "/usr/include/ft/render_service_client/drivers",
+    "/usr/include/ft/render_service_client/buffer_handle",
+    "/usr/include/ft/render_service_client/base",
+    "/usr/include/ft/render_service_client",
+    "/usr/include/ft/render_service_client/render_context",
   ]
   libs = [ "wm", "dm", "render_service_client", "render_service_base", "frame_analyzer", "surface" ]
 }
