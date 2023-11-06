@@ -17,6 +17,7 @@ config("event_loop_public_config") {
   include_dirs = [
     "./includes",
     "./includes/event_loop",
+    "//mock",
   ]
 }
 

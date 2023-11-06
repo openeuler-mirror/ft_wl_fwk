@@ -28,4 +28,8 @@ package_deps = [
     "tar",
     "cmake",
     "wayland-devel",
+    "ft_engine-devel",
+    "distributed-utils",
+    "distributed-build",
+    "mesa-libEGL-devel",
 ]

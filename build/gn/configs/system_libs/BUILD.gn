@@ -14,36 +14,30 @@
 config("c_utils_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "${sys_inc}/c_utils" ]
-  libs = [ "utils", "sec_shared" ]
+  include_dirs = [ "/opt/distributed-middleware-build/openeuler/compiler_include" ]
+  include_dirs += [ "${sys_inc}/c_utils" ]
+  libs = [ "utils.z", "boundscheck" ]
 }
 
 config("ipc_core_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "${sys_inc}/ipc_core" ]
-  libs = [ "ipc_core" ]
+  include_dirs = [ "${sys_inc}/ipc" ]
+  libs = [ "ipc_core.z" ]
 }
 
 config("hilog_config") {
   visibility = [ ":*" ]
 
   include_dirs = [ "${sys_inc}/hilog" ]
-  libs = [ "hilog" ]
-}
-
-config("hitrace_meter_config") {
-  visibility = [ ":*" ]
-
-  include_dirs = [ "${sys_inc}/hitrace_meter" ]
-  libs = [ "hitrace_meter" ]
+  libs = [ "hilog.z" ]
 }
 
 config("eventhandler_config") {
   visibility = [ ":*" ]
 
   include_dirs = [ "${sys_inc}/eventhandler" ]
-  libs = [ "eventhandler" ]
+  libs = [ "eventhandler.z" ]
 }
 
 config("skia_config") {
@@ -61,7 +55,7 @@ config("samgr_config") {
   visibility = [ ":*" ]
 
   include_dirs = [ "${sys_inc}/samgr" ]
-  libs = [ "samgr_proxy" ]
+  libs = [ "samgr_proxy.z" ]
 }
 
 config("image_config") {
@@ -82,26 +76,26 @@ config("safwk_config") {
   visibility = [ ":*" ]
 
   include_dirs = [ "${sys_inc}/safwk" ]
-  libs = [ "system_ability_fwk" ]
+  libs = [ "system_ability_fwk.z" ]
 }
 
 config("ft_engine_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
-    "/usr/include/ftsurface",
-    "/usr/include/ft",
-    "/usr/include/ft/wm",
-    "/usr/include/ft/dm",
-    "/usr/include/ft/utils",
-    "/usr/include/ft/render_service_client/core",
-    "/usr/include/ft/render_service_client/surface",
-    "/usr/include/ft/render_service_client/common",
-    "/usr/include/ft/render_service_client/drivers",
-    "/usr/include/ft/render_service_client/buffer_handle",
-    "/usr/include/ft/render_service_client/base",
-    "/usr/include/ft/render_service_client",
-    "/usr/include/ft/render_service_client/render_context",
+    "${sys_inc}/ftsurface",
+    "${sys_inc}/ft",
+    "${sys_inc}/ft/wm",
+    "${sys_inc}/ft/dm",
+    "${sys_inc}/ft/utils",
+    "${sys_inc}/ft/render_service_client/core",
+    "${sys_inc}/ft/render_service_client/surface",
+    "${sys_inc}/ft/render_service_client/common",
+    "${sys_inc}/ft/render_service_client/drivers",
+    "${sys_inc}/ft/render_service_client/buffer_handle",
+    "${sys_inc}/ft/render_service_client/base",
+    "${sys_inc}/ft/render_service_client",
+    "${sys_inc}/ft/render_service_client/render_context",
   ]
   libs = [ "wm", "dm", "render_service_client", "render_service_base", "frame_analyzer", "surface" ]
 }
@@ -127,11 +121,6 @@ group("eventhandler") {
   public_configs = [ ":eventhandler_config" ]
 }
 
-group("hitrace_meter") {
-  public_deps = [ ":c_utils" ]
-  public_configs = [ ":hitrace_meter_config" ]
-}
-
 group("samgr") {
   public_deps = [ ":c_utils" ]
   public_configs = [ ":samgr_config" ]
@@ -140,7 +129,6 @@ group("samgr") {
 group("image") {
   public_deps = [
     ":hilog",
-    ":hitrace_meter",
     ":c_utils",
     ":ipc_core",
   ]
