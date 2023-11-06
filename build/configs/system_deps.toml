@@ -28,4 +28,6 @@ package_deps = [
     "tar",
     "cmake",
     "wayland-devel",
+    "distributed-utils",
+    "distributed-build",
 ]

@@ -14,8 +14,9 @@
 config("c_utils_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "${sys_inc}/c_utils" ]
-  libs = [ "utils", "sec_shared" ]
+  include_dirs = [ "/opt/distributed-middleware-build/openeuler/compiler_include" ]
+  include_dirs += [ "${sys_inc}/c_utils" ]
+  libs = [ "utils.z", "boundscheck" ]
 }
 
 config("ipc_core_config") {
@@ -29,7 +30,7 @@ config("hilog_config") {
   visibility = [ ":*" ]
 
   include_dirs = [ "${sys_inc}/hilog" ]
-  libs = [ "hilog" ]
+  libs = [ "hilog.z" ]
 }
 
 config("hitrace_meter_config") {
@@ -43,7 +44,7 @@ config("eventhandler_config") {
   visibility = [ ":*" ]
 
   include_dirs = [ "${sys_inc}/eventhandler" ]
-  libs = [ "eventhandler" ]
+  libs = [ "eventhandler.z" ]
 }
 
 config("skia_config") {
@@ -61,7 +62,7 @@ config("samgr_config") {
   visibility = [ ":*" ]
 
   include_dirs = [ "${sys_inc}/samgr" ]
-  libs = [ "samgr_proxy" ]
+  libs = [ "samgr_proxy.z" ]
 }
 
 config("image_config") {
@@ -82,26 +83,26 @@ config("safwk_config") {
   visibility = [ ":*" ]
 
   include_dirs = [ "${sys_inc}/safwk" ]
-  libs = [ "system_ability_fwk" ]
+  libs = [ "system_ability_fwk.z" ]
 }
 
 config("ft_engine_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
-    "/usr/include/ftsurface",
-    "/usr/include/ft",
-    "/usr/include/ft/wm",
-    "/usr/include/ft/dm",
-    "/usr/include/ft/utils",
-    "/usr/include/ft/render_service_client/core",
-    "/usr/include/ft/render_service_client/surface",
-    "/usr/include/ft/render_service_client/common",
-    "/usr/include/ft/render_service_client/drivers",
-    "/usr/include/ft/render_service_client/buffer_handle",
-    "/usr/include/ft/render_service_client/base",
-    "/usr/include/ft/render_service_client",
-    "/usr/include/ft/render_service_client/render_context",
+    "${sys_inc}/ftsurface",
+    "${sys_inc}/ft",
+    "${sys_inc}/ft/wm",
+    "${sys_inc}/ft/dm",
+    "${sys_inc}/ft/utils",
+    "${sys_inc}/ft/render_service_client/core",
+    "${sys_inc}/ft/render_service_client/surface",
+    "${sys_inc}/ft/render_service_client/common",
+    "${sys_inc}/ft/render_service_client/drivers",
+    "${sys_inc}/ft/render_service_client/buffer_handle",
+    "${sys_inc}/ft/render_service_client/base",
+    "${sys_inc}/ft/render_service_client",
+    "${sys_inc}/ft/render_service_client/render_context",
   ]
   libs = [ "wm", "dm", "render_service_client", "render_service_base", "frame_analyzer", "surface" ]
 }
