@@ -22,8 +22,8 @@ config("c_utils_config") {
 config("ipc_core_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "${sys_inc}/ipc_core" ]
-  libs = [ "ipc_core" ]
+  include_dirs = [ "${sys_inc}/ipc" ]
+  libs = [ "ipc_core.z" ]
 }
 
 config("hilog_config") {
@@ -31,13 +31,6 @@ config("hilog_config") {
 
   include_dirs = [ "${sys_inc}/hilog" ]
   libs = [ "hilog.z" ]
-}
-
-config("hitrace_meter_config") {
-  visibility = [ ":*" ]
-
-  include_dirs = [ "${sys_inc}/hitrace_meter" ]
-  libs = [ "hitrace_meter" ]
 }
 
 config("eventhandler_config") {
@@ -128,11 +121,6 @@ group("eventhandler") {
   public_configs = [ ":eventhandler_config" ]
 }
 
-group("hitrace_meter") {
-  public_deps = [ ":c_utils" ]
-  public_configs = [ ":hitrace_meter_config" ]
-}
-
 group("samgr") {
   public_deps = [ ":c_utils" ]
   public_configs = [ ":samgr_config" ]
@@ -141,7 +129,6 @@ group("samgr") {
 group("image") {
   public_deps = [
     ":hilog",
-    ":hitrace_meter",
     ":c_utils",
     ":ipc_core",
   ]

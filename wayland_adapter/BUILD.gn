@@ -37,6 +37,7 @@ ft_shared_library("libwayland_adapter") {
   deps = [
     "//build/gn/configs/system_libs:hilog",
     "//build/gn/configs/system_libs:safwk",
+    "//build/gn/configs/system_libs:ft_engine",
     "//event_loop:ft_event_loop",
     "//wayland_adapter/framework:wayland_framewok_sources",
     "//wayland_adapter/utils:wayland_adapter_utils_sources",
