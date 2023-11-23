@@ -245,7 +245,7 @@ static struct window *CreateWindow(struct display *display, int32_t width, int32
         xdg_toplevel_add_listener(pWindow->xdg_toplevel, &g_xdgToplevelListener, pWindow);
 
         xdg_toplevel_set_title(pWindow->xdg_toplevel, "simple-shm");
-        xdg_toplevel_set_app_id(pWindow->xdg_toplevel, "org.freedesktop.weston.simple-shm");
+        xdg_toplevel_set_app_id(pWindow->xdg_toplevel, "wayland_demo");
 
         wl_surface_commit(pWindow->surface);
         pWindow->wait_for_configure = true;
