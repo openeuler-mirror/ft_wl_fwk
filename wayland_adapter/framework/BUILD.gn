@@ -19,6 +19,7 @@ config("wayland_framework_public_config") {
     "core",
     "stable",
     "unstable",
+    "/usr/include/libdrm",
   ]
 }
 
@@ -48,6 +49,7 @@ ft_source_set("wayland_framewok_sources") {
   ]
 
   sources += [
+    "unstable/wayland_zwp_linux_dmabuf.cpp",
     "unstable/wayland_zxdg_output_manager_v1.cpp",
     "unstable/wayland_zxdg_output_v1.cpp",
   ]

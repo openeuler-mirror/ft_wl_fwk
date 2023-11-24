@@ -20,6 +20,9 @@ config("wayland_public_config") {
 
 ft_source_set("wayland_protocols_sources") {
   sources = [ "stable/xdg-shell/xdg-shell-protocol.c" ]
-  sources += [ "unstable/xdg-output-unstable-v1-protocol.c" ]
+  sources += [
+    "unstable/linux-dmabuf-unstable-v1-protocol.c",
+    "unstable/xdg-output-unstable-v1-protocol.c",
+  ]
   public_configs = [ ":wayland_public_config" ]
 }
