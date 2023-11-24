@@ -44,6 +44,8 @@ void WaylandServer::CreateGlobalObjects()
     subCompositorGlobal_ = WaylandSubCompositor::Create(display_);
     zxdgOutputMgrGlobal_ = WaylandZxdgOutputManagerV1::Create(display_);
     dataDeviceManagerGlobal_ = WaylandDataDeviceManager::Create(display_);
+    // Not ready
+    // zwpLinuxDmabufGlobal_ = WaylandZwpLinuxDmabuf::Create(display_);
     wl_display_add_shm_format(display_, WL_SHM_FORMAT_RGBA8888);
     wl_display_init_shm(display_);
 }
@@ -108,6 +110,9 @@ void WaylandServer::OnStop()
     seatGlobal_ = nullptr;
     outputGlobal_ = nullptr;
     subCompositorGlobal_ = nullptr;
+    zxdgOutputMgrGlobal_ = nullptr;
+    dataDeviceManagerGlobal_ = nullptr;
+    zwpLinuxDmabufGlobal_ = nullptr;
 }
 
 void WaylandServer::OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId)

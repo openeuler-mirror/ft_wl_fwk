@@ -218,6 +218,7 @@ void WaylandSeat::UpdateCapabilities(struct wl_resource *resource)
         wait_count++;
     }
     wl_seat_send_capabilities(resource, cap);
+    wl_seat_send_name(resource, "default");
 }
 
 WaylandSeatObject::WaylandSeatObject(struct wl_client *client, uint32_t version, uint32_t id)
