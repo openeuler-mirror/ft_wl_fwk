@@ -109,6 +109,9 @@ void WaylandServer::OnStop()
     seatGlobal_ = nullptr;
     outputGlobal_ = nullptr;
     subCompositorGlobal_ = nullptr;
+    zxdgOutputMgrGlobal_ = nullptr;
+    dataDeviceManagerGlobal_ = nullptr;
+    zwpLinuxDmabufGlobal_ = nullptr;
 }
 
 void WaylandServer::OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
