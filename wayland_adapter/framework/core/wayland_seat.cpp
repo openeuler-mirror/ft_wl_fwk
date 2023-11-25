@@ -174,14 +174,14 @@ void WaylandSeat::GetPointerResource(struct wl_client *client, std::list<OHOS::s
     }
 }
 
-bool WaylandSeat::IsHotPlug()
+bool WaylandSeat::IsHotPlugIn()
 {
-    return isHotPlug_;
+    return isHotPlugIn_;
 }
 
-void WaylandSeat::ResetHotPlug()
+void WaylandSeat::ResetHotPlugIn()
 {
-    isHotPlug_ = false;
+    isHotPlugIn_ = false;
 }
 
 void WaylandSeat::GetCapabilities()
@@ -191,17 +191,14 @@ void WaylandSeat::GetCapabilities()
     int32_t hasGetDevNums = 0;
     bool isGetIds = false;
     int32_t wait_count = 0;
-    bool isHotPlugEvent = caps_ != 0;
+    bool oldCaps = caps_;
     caps_ = 0;
 
-    auto GetDeviceCb = [&hasGetDevNums, &isHotPlugEvent, this](std::shared_ptr<InputDevice> inputDevice) {
+    auto GetDeviceCb = [&hasGetDevNums, this](std::shared_ptr<InputDevice> inputDevice) {
         LOG_INFO("Get device success, id=%{public}d, name=%{public}s, type=%{public}d",
             inputDevice->GetId(), inputDevice->GetName().c_str(), inputDevice->GetType());
         if (inputDevice->GetType() == static_cast<int32_t>(DEVICE_TYPE_MOUSE)) {
             caps_ |= WL_SEAT_CAPABILITY_POINTER;
-            if (isHotPlugEvent) {
-                isHotPlug_ = true;
-            }
         } else if (inputDevice->GetType() == static_cast<int32_t>(DEVICE_TYPE_KEYBOARD)) {
             caps_ |= WL_SEAT_CAPABILITY_KEYBOARD;
         }
@@ -225,6 +222,10 @@ void WaylandSeat::GetCapabilities()
     while (hasGetDevNums != DevNums && wait_count < 100) {
         usleep(3 * 1000); // wait for GetDeviceCb finish
         wait_count++;
+    }
+
+    if (caps_ > oldCaps) {
+        isHotPlugIn_ = true;
     }
 }
 
