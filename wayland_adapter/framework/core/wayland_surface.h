@@ -100,6 +100,27 @@ private:
     void CopyBuffer(struct wl_shm_buffer *shm);
     void CheckIsPointerSurface();
 
+    class WaylandWindowListener : public OHOS::Rosen::IWindowChangeListener {
+    public:
+        WaylandWindowListener(OHOS::sptr<WaylandSurface> wlSurface) : wlSurface_(wlSurface) {}
+        ~WaylandWindowListener() = default;
+        void OnSizeChange(OHOS::Rosen::Rect rect, OHOS::Rosen::WindowSizeChangeReason reason) override
+        {
+            if (wlSurface_ != nullptr) {
+                wlSurface_->OnSizeChange(rect, reason);
+            }
+        }
+        void OnModeChange(OHOS::Rosen::WindowMode mode) override
+        {
+            if (wlSurface_ != nullptr) {
+                wlSurface_->OnModeChange(mode);
+            }
+        }
+    private:
+        OHOS::sptr<WaylandSurface> wlSurface_ = nullptr;
+    };
+
+    OHOS::sptr<WaylandWindowListener> listener_;
     struct wl_resource *parent_ = nullptr;
     std::list<SurfaceCommitCallback> commitCallbacks_;
     std::list<SurfaceRectCallback> rectCallbacks_;
