@@ -191,7 +191,7 @@ void WaylandSeat::GetCapabilities()
     int32_t hasGetDevNums = 0;
     bool isGetIds = false;
     int32_t wait_count = 0;
-    bool oldCaps = caps_;
+    uint32_t oldCaps = caps_;
     caps_ = 0;
 
     auto GetDeviceCb = [&hasGetDevNums, this](std::shared_ptr<InputDevice> inputDevice) {
