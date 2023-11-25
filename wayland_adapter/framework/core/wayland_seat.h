@@ -41,6 +41,8 @@ public:
     static OHOS::sptr<WaylandSeat> GetWaylandSeatGlobal();
     void GetPointerResource(struct wl_client *client, std::list<OHOS::sptr<WaylandPointer>> &list);
     void GetKeyboardResource(struct wl_client *client, std::list<OHOS::sptr<WaylandKeyboard>> &list);
+    bool IsHotPlug();
+    void ResetHotPlug();
     ~WaylandSeat() noexcept override;
     void FreeSeatResource(struct wl_client *client, struct wl_resource *resource);
 
@@ -77,6 +79,7 @@ private:
     mutable std::mutex seatResourcesMutex_;
     mutable std::mutex capsMutex_;
     uint32_t caps_ = 0;
+    bool isHotPlug_ = false;
 };
 
 class WaylandSeatObject final : public WaylandResourceObject {
