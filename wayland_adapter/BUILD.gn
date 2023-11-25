@@ -35,7 +35,9 @@ ft_shared_library("libwayland_adapter") {
   libs = [ "wayland-server" ]
 
   deps = [
+    "//build/gn/configs/system_libs:eventhandler",
     "//build/gn/configs/system_libs:hilog",
+    "//build/gn/configs/system_libs:mmi",
     "//build/gn/configs/system_libs:safwk",
     "//event_loop:ft_event_loop",
     "//wayland_adapter/framework:wayland_framewok_sources",
