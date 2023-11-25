@@ -256,31 +256,6 @@ OHOS::sptr<WaylandSurface> WaylandSurface::Create(struct wl_client *client,
     return surface;
 }
 
-class WaylandWindowListener : public OHOS::Rosen::IWindowChangeListener {
-public:
-    WaylandWindowListener(OHOS::sptr<WaylandSurface> wlSurface) : wlSurface_(wlSurface) {}
-    ~WaylandWindowListener() = default;
-    void OnSizeChange(OHOS::Rosen::Rect rect, OHOS::Rosen::WindowSizeChangeReason reason) override;
-    void OnModeChange(OHOS::Rosen::WindowMode mode) override;
-
-private:
-    OHOS::sptr<WaylandSurface> wlSurface_ = nullptr;
-};
-
-void WaylandWindowListener::OnSizeChange(OHOS::Rosen::Rect rect, OHOS::Rosen::WindowSizeChangeReason reason)
-{
-    if (wlSurface_ != nullptr) {
-        wlSurface_->OnSizeChange(rect, reason);
-    }
-}
-
-void WaylandWindowListener::OnModeChange(OHOS::Rosen::WindowMode mode)
-{
-    if (wlSurface_ != nullptr) {
-        wlSurface_->OnModeChange(mode);
-    }
-}
-
 WaylandSurface::WaylandSurface(struct wl_client *client, struct wl_resource *parent, uint32_t version, uint32_t id)
     : WaylandResourceObject(client, &wl_surface_interface, version, id, &IWaylandSurface::impl_),
       parent_(parent)
@@ -297,6 +272,14 @@ WaylandSurface::WaylandSurface(struct wl_client *client, struct wl_resource *par
 WaylandSurface::~WaylandSurface() noexcept
 {
     LOG_DEBUG("exit : %{public}s.", windowTitle_.c_str());
+    if (window_ != nullptr) {
+        if (listener_ != nullptr) {
+            window_->UnregisterWindowChangeListener(listener_);
+            listener_ = nullptr;
+        }
+        window_->Destroy();
+        window_ = nullptr;
+    }
 }
 
 void WaylandSurface::AddCommitCallback(SurfaceCommitCallback callback)
@@ -514,8 +497,8 @@ void WaylandSurface::CreateWindow()
     window_->SetAPPWindowLabel(windowOptionExt_->title);
     window_->Show();
 
-    OHOS::sptr<WaylandWindowListener> waylandWindowListener = new WaylandWindowListener(this);
-    window_->RegisterWindowChangeListener(waylandWindowListener);
+    listener_ = new WaylandWindowListener(this);
+    window_->RegisterWindowChangeListener(listener_);
 
     surfaceNode_ = window_->GetSurfaceNode();
     if (surfaceNode_ == nullptr) {
