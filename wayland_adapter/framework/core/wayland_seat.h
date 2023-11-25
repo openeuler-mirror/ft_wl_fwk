@@ -41,6 +41,8 @@ public:
     static OHOS::sptr<WaylandSeat> GetWaylandSeatGlobal();
     void GetPointerResource(struct wl_client *client, std::list<OHOS::sptr<WaylandPointer>> &list);
     void GetKeyboardResource(struct wl_client *client, std::list<OHOS::sptr<WaylandKeyboard>> &list);
+    bool IsHotPlugIn();
+    void ResetHotPlugIn();
     ~WaylandSeat() noexcept override;
     void FreeSeatResource(struct wl_client *client, struct wl_resource *resource);
 
@@ -49,22 +51,35 @@ private:
     void Bind(struct wl_client *client, uint32_t version, uint32_t id) override;
     void GetCapabilities();
     void UpdateCapabilities(struct wl_resource *resource);
+    void SendNewCapabilities();
+    void OnDeviceAdded(int32_t deviceId);
+    void OnDeviceRemoved(int32_t deviceId);
 
     class WaylandInputDeviceListener : public OHOS::MMI::IInputDeviceListener {
     public:
-        WaylandInputDeviceListener() = default;
+        WaylandInputDeviceListener(OHOS::sptr<WaylandSeat> wlSeat) : wlSeat_(wlSeat) {}
         ~WaylandInputDeviceListener() = default;
         void OnDeviceAdded(int32_t deviceId, const std::string &type) override
         {
+            if (wlSeat_ != nullptr) {
+                wlSeat_->OnDeviceAdded(deviceId);
+            }
         }
         void OnDeviceRemoved(int32_t deviceId, const std::string &type) override
         {
+            if (wlSeat_ != nullptr) {
+                wlSeat_->OnDeviceRemoved(deviceId);
+            }
         }
+    private:
+        OHOS::sptr<WaylandSeat> wlSeat_ = nullptr;
     };
     std::shared_ptr<WaylandInputDeviceListener> inputListener_;
     std::unordered_map<struct wl_client *, std::list<OHOS::sptr<WaylandSeatObject>>> seatResourcesMap_;
     mutable std::mutex seatResourcesMutex_;
+    mutable std::mutex capsMutex_;
     uint32_t caps_ = 0;
+    bool isHotPlugIn_ = false;
 };
 
 class WaylandSeatObject final : public WaylandResourceObject {

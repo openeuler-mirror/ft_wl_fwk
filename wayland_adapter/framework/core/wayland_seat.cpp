@@ -14,6 +14,7 @@
  */
 
 #include <mutex>
+#include <thread>
 #include "wayland_seat.h"
 
 #include "wayland_objects_pool.h"
@@ -68,7 +69,7 @@ OHOS::sptr<WaylandSeat> WaylandSeat::Create(struct wl_display *display)
 
     wl_seat_global = OHOS::sptr<WaylandSeat>(new WaylandSeat(display));
     wl_seat_global->GetCapabilities();
-    wl_seat_global->inputListener_ = std::make_shared<WaylandInputDeviceListener>();
+    wl_seat_global->inputListener_ = std::make_shared<WaylandInputDeviceListener>(wl_seat_global);
     InputManager::GetInstance()->RegisterDevListener("change", wl_seat_global->inputListener_);
 
     return wl_seat_global;
@@ -173,6 +174,16 @@ void WaylandSeat::GetPointerResource(struct wl_client *client, std::list<OHOS::s
     }
 }
 
+bool WaylandSeat::IsHotPlugIn()
+{
+    return isHotPlugIn_;
+}
+
+void WaylandSeat::ResetHotPlugIn()
+{
+    isHotPlugIn_ = false;
+}
+
 void WaylandSeat::GetCapabilities()
 {
     LOG_INFO("GetCapabilities in");
@@ -180,13 +191,15 @@ void WaylandSeat::GetCapabilities()
     int32_t hasGetDevNums = 0;
     bool isGetIds = false;
     int32_t wait_count = 0;
+    uint32_t oldCaps = caps_;
+    caps_ = 0;
 
     auto GetDeviceCb = [&hasGetDevNums, this](std::shared_ptr<InputDevice> inputDevice) {
         LOG_INFO("Get device success, id=%{public}d, name=%{public}s, type=%{public}d",
             inputDevice->GetId(), inputDevice->GetName().c_str(), inputDevice->GetType());
-        if (inputDevice->GetType() == (int32_t)DEVICE_TYPE_MOUSE) {
+        if (inputDevice->GetType() == static_cast<int32_t>(DEVICE_TYPE_MOUSE)) {
             caps_ |= WL_SEAT_CAPABILITY_POINTER;
-        } else if (inputDevice->GetType() == (int32_t)DEVICE_TYPE_KEYBOARD) {
+        } else if (inputDevice->GetType() == static_cast<int32_t>(DEVICE_TYPE_KEYBOARD)) {
             caps_ |= WL_SEAT_CAPABILITY_KEYBOARD;
         }
         hasGetDevNums++;
@@ -210,6 +223,10 @@ void WaylandSeat::GetCapabilities()
         usleep(3 * 1000); // wait for GetDeviceCb finish
         wait_count++;
     }
+
+    if (caps_ > oldCaps) {
+        isHotPlugIn_ = true;
+    }
 }
 
 void WaylandSeat::UpdateCapabilities(struct wl_resource *resource)
@@ -217,6 +234,46 @@ void WaylandSeat::UpdateCapabilities(struct wl_resource *resource)
     LOG_INFO("UpdateCapabilities in");
     wl_seat_send_capabilities(resource, caps_);
     wl_seat_send_name(resource, "default");
+}
+
+void WaylandSeat::SendNewCapabilities()
+{
+    uint32_t oldCaps = caps_;
+    GetCapabilities();
+    if (oldCaps == caps_) {
+        LOG_INFO("caps unchange, no need to report");
+        return;
+    } else {
+        for (auto it = seatResourcesMap_.begin(); it != seatResourcesMap_.end(); ++it) {
+            auto seatList = it->second;
+            for (auto it1 = seatList.begin(); it1 != seatList.end(); ++it1) {
+                UpdateCapabilities((*it1)->WlResource());
+            }
+        }
+    }
+}
+
+void WaylandSeat::OnDeviceAdded(int32_t deviceId)
+{
+    std::thread capsThread([this]() {
+        std::lock_guard<std::mutex> lock(capsMutex_);
+        const static int32_t CPAS_MOUSE_AND_KEYBOARD = 3;
+        if (caps_ == CPAS_MOUSE_AND_KEYBOARD) {
+            LOG_INFO("Device added: already connected the mouse and keyboard, no need to report");
+        } else {
+            SendNewCapabilities();
+        }
+    });
+    capsThread.detach();
+}
+
+void WaylandSeat::OnDeviceRemoved(int32_t deviceId)
+{
+    std::thread capsThread([this]() {
+        std::lock_guard<std::mutex> lock(capsMutex_);
+        SendNewCapabilities();
+    });
+    capsThread.detach();
 }
 
 WaylandSeatObject::WaylandSeatObject(struct wl_client *client, uint32_t version, uint32_t id)

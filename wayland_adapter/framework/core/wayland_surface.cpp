@@ -129,6 +129,17 @@ bool InputEventConsumer::OnInputEvent(const std::shared_ptr<OHOS::MMI::PointerEv
             pointerItem.SetWindowX(pointerItem.GetWindowX() + rect.x);
             pointerItem.SetWindowY(pointerItem.GetWindowY() + rect.y);
         }
+
+        if (wlSeat->IsHotPlugIn()) {
+            for (auto &pointer : pointerList) {
+                pointer->OnPointerEnter(pointerItem.GetWindowX(), pointerItem.GetWindowY(), wlSurface_->WlResource());
+            }
+            for (auto &keyboard : keyboardList) {
+                keyboard->OnKeyboardEnter(wlSurface_->WlResource());
+            }
+            wlSeat->ResetHotPlugIn();
+        }
+
         if (pointerEvent->GetPointerAction() ==  OHOS::MMI::PointerEvent::POINTER_ACTION_ENTER_WINDOW) {
             for (auto &pointer : pointerList) {
                 pointer->OnPointerEnter(pointerItem.GetWindowX(), pointerItem.GetWindowY(), wlSurface_->WlResource());
