@@ -12,4 +12,18 @@
 # limitations under the License.
 
 
+ft_process_name="ft"
+ft_process_count=$(ps -ef | grep -w $ft_process_name | wc -l)
+
+if [ $ft_process_count -lt 2 ]; then
+    echo "No FT_engine detected, starting the FT_engine first"
+    sudo systemctl restart samgr
+    sudo systemctl restart hilogd
+    sudo dmesg -n 1
+    sa_main /usr/local/share/ft/ft.xml &
+    sleep 3
+else
+    echo "FT_engine detected"
+fi
+
 sa_main /usr/local/share/ft/ft_wl.xml
