@@ -18,7 +18,6 @@
 
 #include "wayland_objects_pool.h"
 #include "version.h"
-#include "input_manager.h"
 #include <struct_multimodal.h>
 
 using namespace OHOS::MMI;
@@ -68,6 +67,10 @@ OHOS::sptr<WaylandSeat> WaylandSeat::Create(struct wl_display *display)
     }
 
     wl_seat_global = OHOS::sptr<WaylandSeat>(new WaylandSeat(display));
+    wl_seat_global->GetCapabilities();
+    wl_seat_global->inputListener_ = std::make_shared<WaylandInputDeviceListener>();
+    InputManager::GetInstance()->RegisterDevListener("change", wl_seat_global->inputListener_);
+
     return wl_seat_global;
 }
 
@@ -102,11 +105,9 @@ WaylandSeat::WaylandSeat(struct wl_display *display)
 
 WaylandSeat::~WaylandSeat() noexcept
 {
-    if (thread_ != nullptr) {
-        if (thread_->joinable()) {
-            thread_->join();
-        }
-        thread_ = nullptr;
+    if (inputListener_ != nullptr) {
+        InputManager::GetInstance()->UnregisterDevListener("change", inputListener_);
+        inputListener_ = nullptr;
     }
 }
 
@@ -121,14 +122,7 @@ void WaylandSeat::Bind(struct wl_client *client, uint32_t version, uint32_t id)
     std::lock_guard<std::mutex> lock(seatResourcesMutex_);
     WaylandObjectsPool::GetInstance().AddObject(ObjectId(object->WlClient(), object->Id()), object);
     seatResourcesMap_[client].emplace_back(object);
-
-    if (thread_ != nullptr) {
-        if (thread_->joinable()) {
-            thread_->join();
-        }
-        thread_ = nullptr;
-    }
-    thread_ = std::make_unique<std::thread>(&WaylandSeat::UpdateCapabilities, object->WlResource());
+    UpdateCapabilities(object->WlResource());
 }
 
 void WaylandSeat::GetKeyboardResource(struct wl_client *client, std::list<OHOS::sptr<WaylandKeyboard>>& list)
@@ -179,22 +173,21 @@ void WaylandSeat::GetPointerResource(struct wl_client *client, std::list<OHOS::s
     }
 }
 
-void WaylandSeat::UpdateCapabilities(struct wl_resource *resource)
+void WaylandSeat::GetCapabilities()
 {
-    LOG_INFO("UpdateCapabilities in");
-    uint32_t cap = 0;
+    LOG_INFO("GetCapabilities in");
     int32_t DevNums = 0;
     int32_t hasGetDevNums = 0;
     bool isGetIds = false;
     int32_t wait_count = 0;
 
-    auto GetDeviceCb = [&hasGetDevNums, &cap](std::shared_ptr<InputDevice> inputDevice) {
+    auto GetDeviceCb = [&hasGetDevNums, this](std::shared_ptr<InputDevice> inputDevice) {
         LOG_INFO("Get device success, id=%{public}d, name=%{public}s, type=%{public}d",
             inputDevice->GetId(), inputDevice->GetName().c_str(), inputDevice->GetType());
         if (inputDevice->GetType() == (int32_t)DEVICE_TYPE_MOUSE) {
-            cap |= WL_SEAT_CAPABILITY_POINTER;
+            caps_ |= WL_SEAT_CAPABILITY_POINTER;
         } else if (inputDevice->GetType() == (int32_t)DEVICE_TYPE_KEYBOARD) {
-            cap |= WL_SEAT_CAPABILITY_KEYBOARD;
+            caps_ |= WL_SEAT_CAPABILITY_KEYBOARD;
         }
         hasGetDevNums++;
     };
@@ -217,7 +210,12 @@ void WaylandSeat::UpdateCapabilities(struct wl_resource *resource)
         usleep(3 * 1000); // wait for GetDeviceCb finish
         wait_count++;
     }
-    wl_seat_send_capabilities(resource, cap);
+}
+
+void WaylandSeat::UpdateCapabilities(struct wl_resource *resource)
+{
+    LOG_INFO("UpdateCapabilities in");
+    wl_seat_send_capabilities(resource, caps_);
     wl_seat_send_name(resource, "default");
 }
 

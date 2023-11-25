@@ -15,8 +15,8 @@
 
 #pragma once
 
-#include <thread>
 #include <list>
+#include "input_manager.h"
 #include "wayland_global.h"
 #include "wayland_pointer.h"
 #include "wayland_keyboard.h"
@@ -47,10 +47,24 @@ public:
 private:
     WaylandSeat(struct wl_display *display);
     void Bind(struct wl_client *client, uint32_t version, uint32_t id) override;
-    static void UpdateCapabilities(struct wl_resource *resource);
+    void GetCapabilities();
+    void UpdateCapabilities(struct wl_resource *resource);
+
+    class WaylandInputDeviceListener : public OHOS::MMI::IInputDeviceListener {
+    public:
+        WaylandInputDeviceListener() = default;
+        ~WaylandInputDeviceListener() = default;
+        void OnDeviceAdded(int32_t deviceId, const std::string &type) override
+        {
+        }
+        void OnDeviceRemoved(int32_t deviceId, const std::string &type) override
+        {
+        }
+    };
+    std::shared_ptr<WaylandInputDeviceListener> inputListener_;
     std::unordered_map<struct wl_client *, std::list<OHOS::sptr<WaylandSeatObject>>> seatResourcesMap_;
-    std::unique_ptr<std::thread> thread_ = nullptr;
     mutable std::mutex seatResourcesMutex_;
+    uint32_t caps_ = 0;
 };
 
 class WaylandSeatObject final : public WaylandResourceObject {
@@ -67,6 +81,7 @@ private:
     void GetPointer(uint32_t id);
     void GetKeyboard(uint32_t id);
     void GetTouch(uint32_t id);
+
     std::unordered_map<struct wl_client *, std::list<OHOS::sptr<WaylandPointer>>> pointerResourcesMap_;
     std::unordered_map<struct wl_client *, std::list<OHOS::sptr<WaylandKeyboard>>> keyboardResourcesMap_;
 };
