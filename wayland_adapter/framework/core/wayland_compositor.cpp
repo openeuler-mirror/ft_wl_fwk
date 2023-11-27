@@ -45,7 +45,7 @@ void IWaylandCompositor::CreateRegion(struct wl_client *client, struct wl_resour
 OHOS::sptr<WaylandCompositor> WaylandCompositor::Create(struct wl_display *display)
 {
     if (display == nullptr) {
-        LOG_ERROR("display is nullptr");
+        LOG_ERROR("Display is nullptr");
         return nullptr;
     }
 
@@ -61,7 +61,7 @@ void WaylandCompositor::Bind(struct wl_client *client, uint32_t version, uint32_
 {
     auto object = OHOS::sptr<WaylandCompositorObject>(new WaylandCompositorObject(client, version, id));
     if (object == nullptr) {
-        LOG_ERROR("no memory");
+        LOG_ERROR("No memory");
         return;
     }
     WaylandObjectsPool::GetInstance().AddObject(ObjectId(object->WlClient(), object->Id()), object);
@@ -76,7 +76,7 @@ void WaylandCompositorObject::CreateSurface(struct wl_client *client, struct wl_
 {
     auto surface = WaylandSurface::Create(client, resource, wl_resource_get_version(resource), id);
     if (surface == nullptr) {
-        LOG_ERROR("no memory");
+        LOG_ERROR("No memory");
         return;
     }
 }
@@ -85,7 +85,7 @@ void WaylandCompositorObject::CreateRegion(struct wl_client *client, struct wl_r
 {
     auto region = WaylandRegion::Create(client, resource, wl_resource_get_version(resource), id);
     if (region == nullptr) {
-        LOG_ERROR("no memory");
+        LOG_ERROR("No memory");
         return;
     }
 }
