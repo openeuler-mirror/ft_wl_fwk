@@ -27,7 +27,7 @@ struct wl_output_interface IWaylandOutput::impl_ = {.release = &WaylandResourceO
 OHOS::sptr<WaylandOutput> WaylandOutput::Create(struct wl_display *display)
 {
     if (display == nullptr) {
-        LOG_ERROR("display nullptr");
+        LOG_ERROR("Display nullptr");
         return nullptr;
     }
 
@@ -73,7 +73,7 @@ void WaylandOutput::Bind(struct wl_client *client, uint32_t version, uint32_t id
 {
     auto object = OHOS::sptr<WaylandOutputObject>(new WaylandOutputObject(client, version, id));
     if (object == nullptr) {
-        LOG_ERROR("no memory");
+        LOG_ERROR("No memory");
         return;
     }
     WaylandObjectsPool::GetInstance().AddObject(ObjectId(object->WlClient(), object->Id()), object);
