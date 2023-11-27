@@ -25,30 +25,28 @@ namespace {
     constexpr HiLogLabel LABEL = {LOG_CORE, HILOG_DOMAIN_WAYLAND, "WaylandXdgPopup"};
 }
 
-struct xdg_popup_interface WaylandXdgPopupInterface::impl_ = {
+struct xdg_popup_interface IWaylandXdgPopup::impl_ = {
     .destroy = WaylandResourceObject::DefaultDestroyResource,
-    .grab = WaylandXdgPopupInterface::Grab,
-    .reposition = WaylandXdgPopupInterface::Reposition};
+    .grab = IWaylandXdgPopup::Grab,
+    .reposition = IWaylandXdgPopup::Reposition};
 
-void WaylandXdgPopupInterface::Grab(
-    struct wl_client *client,
-    struct wl_resource *resource,
-    struct wl_resource *seat,
-    uint32_t serial)
-{}
+void IWaylandXdgPopup::Grab(struct wl_client *client, struct wl_resource *resource,
+    struct wl_resource *seat, uint32_t serial)
+{
+    CAST_OBJECT_AND_CALL_FUNC(WaylandXdgPopup, resource,
+        "IWaylandXdgPopup::Grab: failed to find object.", Grab, seat, serial);
+}
 
-void WaylandXdgPopupInterface::Reposition(
-    struct wl_client *client,
-    struct wl_resource *resource,
-    struct wl_resource *positioner,
-    uint32_t token)
-{}
+void IWaylandXdgPopup::Reposition(struct wl_client *client, struct wl_resource *resource,
+    struct wl_resource *positioner, uint32_t token)
+{
+    CAST_OBJECT_AND_CALL_FUNC(WaylandXdgPopup, resource,
+        "IWaylandXdgPopup::Reposition: failed to find object.", Reposition, positioner, token);
+}
 
-OHOS::sptr<WaylandXdgPopup> WaylandXdgPopup::Create(
-    const OHOS::sptr<WaylandXdgSurface> &xdgSurface,
+OHOS::sptr<WaylandXdgPopup> WaylandXdgPopup::Create(const OHOS::sptr<WaylandXdgSurface> &xdgSurface,
     const OHOS::sptr<WaylandXdgSurface> &parentXdgSurface,
-    const OHOS::sptr<WaylandXdgPositioner> &positioner,
-    uint32_t id)
+    const OHOS::sptr<WaylandXdgPositioner> &positioner, uint32_t id)
 {
     if (xdgSurface == nullptr) {
         LOG_ERROR("WaylandXdgPopup::Create: xdgSurface is nullptr.");
@@ -70,21 +68,14 @@ OHOS::sptr<WaylandXdgPopup> WaylandXdgPopup::Create(
     return xdgPopUp;
 }
 
-WaylandXdgPopup::WaylandXdgPopup(
-    const OHOS::sptr<WaylandXdgSurface> &xdgSurface,
+WaylandXdgPopup::WaylandXdgPopup(const OHOS::sptr<WaylandXdgSurface> &xdgSurface,
     const OHOS::sptr<WaylandXdgSurface> &parentXdgSurface,
-    const OHOS::sptr<WaylandXdgPositioner> &positioner,
-    uint32_t id)
-    : WaylandResourceObject(
-          xdgSurface->WlClient(),
-          &xdg_popup_interface,
-          xdgSurface->Version(),
-          id,
-          &WaylandXdgPopupInterface::impl_),
+    const OHOS::sptr<WaylandXdgPositioner> &positioner, uint32_t id)
+    : WaylandResourceObject(xdgSurface->WlClient(), &xdg_popup_interface, xdgSurface->Version(),
+      id, &IWaylandXdgPopup::impl_),
       xdgSurface_(xdgSurface),
       parentXdgSurface_(parentXdgSurface)
 {
-    // TODO: get information from positioner.
     LOG_DEBUG("WaylandXdgPopup  ctor.");
 }
 
@@ -95,22 +86,10 @@ WaylandXdgPopup::~WaylandXdgPopup() noexcept
 
 void WaylandXdgPopup::OnSurfaceCommitted() {}
 
-void WaylandXdgPopup::Grab(struct wl_client *client, struct wl_resource *resource, struct wl_resource *seat, uint32_t serial)
+void WaylandXdgPopup::Grab(struct wl_resource *seat, uint32_t serial)
 {}
 
-void WaylandXdgPopup::Reposition(
-    struct wl_client *client,
-    struct wl_resource *resource,
-    struct wl_resource *positioner,
-    uint32_t token)
+void WaylandXdgPopup::Reposition(struct wl_resource *positioner, uint32_t token)
 {}
-
-void WaylandXdgPopup::UpdateSize(int32_t x, int32_t y, uint32_t width, uint32_t height)
-{
-}
-
-void WaylandXdgPopup::SetGeometry(int32_t x, int32_t y, uint32_t width, uint32_t height)
-{
-}
 } // namespace Wayland
 } // namespace FT
