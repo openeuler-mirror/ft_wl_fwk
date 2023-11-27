@@ -391,15 +391,11 @@ void WaylandSurface::Commit()
         return; // it is pointer surface, we do not handle commit!
     }
 
-    if (withTopLevel_ && window_ == nullptr) {
+    if (!isSubSurface_ && window_ == nullptr) {
         CreateWindow();
     }
 
-    {
-        HandleCommit();
-        LOG_DEBUG("withTopLevel_ %{public}d", withTopLevel_);
-    }
-
+    HandleCommit();
     for (auto &cb : commitCallbacks_) {
         cb();
     }
@@ -578,7 +574,7 @@ void WaylandSurface::CopyBuffer(struct wl_shm_buffer *shm)
         srcBitmap_.installPixels(srcPixmap);
     }
 
-    if (!withTopLevel_) {
+    if (isSubSurface_) {
         auto surfaceParent = CastFromResource<WaylandSurface>(parentSurfaceRes_);
         if (parentSurfaceRes_ != nullptr) {
             surfaceParent->TriggerInnerCompose();
@@ -615,11 +611,6 @@ void WaylandSurface::SetWindowGeometry(Rect rect)
 Rect WaylandSurface::GetWindowGeometry()
 {
     return geometryRect_;
-}
-
-void WaylandSurface::WithTopLevel(bool toplevel)
-{
-    withTopLevel_ = toplevel;
 }
 
 void WaylandSurface::AddChild(struct wl_resource *child, int32_t x, int32_t y)

@@ -145,8 +145,8 @@ inline OHOS::sptr<T> CastFromResource(struct wl_resource *resource)
 }
 
 #define OBJECT_CHECK(object, errlog)                                                                                   \
-    if (!WaylandResourceObject::CheckIfObjectIsValid(object)) {                                                             \
-        LOG_WARN(errlog);                                                                                            \
+    if (!WaylandResourceObject::CheckIfObjectIsValid(object)) {                                                        \
+        LOG_WARN(errlog);                                                                                              \
         return;                                                                                                        \
     }
 

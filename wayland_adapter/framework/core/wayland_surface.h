@@ -67,12 +67,14 @@ public:
     // form xdgsruface
     void SetWindowGeometry(Rect rect);
     Rect GetWindowGeometry();
-
-    void WithTopLevel(bool toplevel);
     void AddChild(struct wl_resource *child, int32_t x, int32_t y);
     void AddParent(struct wl_resource *parent);
     void ProcessSrcBitmap(SkCanvas* canvas, int32_t x, int32_t y);
     void TriggerInnerCompose();
+    void IsSubSurface(bool isSubSurface)
+    {
+        isSubSurface_ = isSubSurface;
+    }
     OHOS::sptr<OHOS::Rosen::WindowOption> GetWindowOption()
     {
         return windowOption_;
@@ -140,7 +142,7 @@ private:
     std::shared_ptr<OHOS::Rosen::RSSurfaceNode> surfaceNode_;
     std::shared_ptr<OHOS::Rosen::RSSurface> rsSurface_;
     std::string windowTitle_;
-    bool withTopLevel_ = false;
+    bool isSubSurface_ = false;
     std::map<wl_resource *, struct SubSurfaceData> childs_;
     struct wl_resource *parentSurfaceRes_ = nullptr;
     std::mutex bitmapMutex_;

@@ -233,7 +233,6 @@ void WaylandSeat::UpdateCapabilities(struct wl_resource *resource)
 {
     LOG_INFO("UpdateCapabilities in");
     wl_seat_send_capabilities(resource, caps_);
-    wl_seat_send_name(resource, "default");
 }
 
 void WaylandSeat::SendNewCapabilities()
