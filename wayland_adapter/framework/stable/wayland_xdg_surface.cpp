@@ -108,7 +108,6 @@ void WaylandXdgSurface::GetToplevel(uint32_t id)
     }
 
     role_ = SurfaceRole::XDG_TOPLEVEL;
-    surface_->WithTopLevel(true);
 }
 
 void WaylandXdgSurface::GetPopup(uint32_t id, struct wl_resource *parent, struct wl_resource *positioner)

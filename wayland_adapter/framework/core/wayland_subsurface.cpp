@@ -67,6 +67,8 @@ WaylandSubSurface::WaylandSubSurface(struct wl_client *client, uint32_t version,
 {
     parentSurfaceRes_ = parent;
     childSurfaceRes_ = surface;
+    auto waylandSurface = CastFromResource<WaylandSurface>(surface);
+    waylandSurface->IsSubSurface(true);
 }
 
 void WaylandSubSurface::SetPosition(struct wl_resource *resource, int32_t x, int32_t y)
