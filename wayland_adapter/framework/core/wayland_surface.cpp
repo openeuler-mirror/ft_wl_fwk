@@ -277,12 +277,12 @@ WaylandSurface::WaylandSurface(struct wl_client *client, struct wl_resource *par
     windowOption_->SetWindowType(OHOS::Rosen::WindowType::APP_WINDOW_BASE);
     windowOption_->SetWindowMode(OHOS::Rosen::WindowMode::WINDOW_MODE_FLOATING);
     windowOption_->SetMainHandlerAvailable(false);
-    LOG_DEBUG("enter : %{public}s.", windowTitle_.c_str());
+    LOG_DEBUG("Enter : %{public}s.", windowTitle_.c_str());
 }
 
 WaylandSurface::~WaylandSurface() noexcept
 {
-    LOG_DEBUG("exit : %{public}s.", windowTitle_.c_str());
+    LOG_DEBUG("Exit : %{public}s.", windowTitle_.c_str());
     if (window_ != nullptr) {
         if (listener_ != nullptr) {
             window_->UnregisterWindowChangeListener(listener_);
@@ -332,12 +332,12 @@ void WaylandSurface::Frame(uint32_t callback)
     bool pending = false;
     if (new_.cb != nullptr) {
         pending = true;
-        LOG_WARN("duplicate frame request");
+        LOG_WARN("Duplicate frame request");
     }
 
     auto cb = FrameCallback::Create(WlClient(), WAYLAND_VERSION_MAJOR, callback);
     if (cb == nullptr) {
-        LOG_ERROR("no memory");
+        LOG_ERROR("No memory");
         return;
     }
 
@@ -352,13 +352,13 @@ void WaylandSurface::Frame(uint32_t callback)
 void WaylandSurface::SetOpaqueRegion(struct wl_resource *regionResource)
 {
     if (regionResource == nullptr) {
-        LOG_ERROR("regionResource is nullptr");
+        LOG_ERROR("RegionResource is nullptr");
         return;
     }
 
     auto region = CastFromResource<WaylandRegion>(regionResource);
     if (region == nullptr) {
-        LOG_ERROR("failed to cast WaylandRegion from regionResource, maybe resource is not valid.");
+        LOG_ERROR("Failed to cast WaylandRegion from regionResource, maybe resource is not valid.");
         return;
     }
 
@@ -370,13 +370,13 @@ void WaylandSurface::SetOpaqueRegion(struct wl_resource *regionResource)
 void WaylandSurface::SetInputRegion(struct wl_resource *regionResource)
 {
     if (regionResource == nullptr) {
-        LOG_ERROR("regionResource is nullptr");
+        LOG_ERROR("RegionResource is nullptr");
         return;
     }
 
     auto region = CastFromResource<WaylandRegion>(regionResource);
     if (region == nullptr) {
-        LOG_ERROR("failed to cast WaylandRegion from regionResource, maybe resource is not valid.");
+        LOG_ERROR("Failed to cast WaylandRegion from regionResource, maybe resource is not valid.");
         return;
     }
 
@@ -435,7 +435,7 @@ void WaylandSurface::HandleCommit() {
     if (clock_gettime(CLOCK_MONOTONIC, &ts) == 0) {
         timeMs = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
     } else {
-        LOG_ERROR("failed to clock_gettime");
+        LOG_ERROR("Failed to clock_gettime");
     }
 
     if (new_.buffer != nullptr) {
@@ -485,7 +485,7 @@ void WaylandSurface::CheckIsPointerSurface()
         }
     }
 
-    LOG_DEBUG("this surface Pointer Surface: %{public}d", isPointerSurface_);
+    LOG_DEBUG("This surface Pointer Surface: %{public}d", isPointerSurface_);
 }
 
 void WaylandSurface::CreateWindow()
@@ -554,7 +554,7 @@ void WaylandSurface::CopyBuffer(struct wl_shm_buffer *shm)
 {
     SkColorType format = ShmFormatToSkia(wl_shm_buffer_get_format(shm));
     if (format == SkColorType::kUnknown_SkColorType) {
-        LOG_ERROR("unsupported format %{public}d", wl_shm_buffer_get_format(shm));
+        LOG_ERROR("Unsupported format %{public}d", wl_shm_buffer_get_format(shm));
         return;
     }
 
@@ -562,7 +562,7 @@ void WaylandSurface::CopyBuffer(struct wl_shm_buffer *shm)
     int32_t width = wl_shm_buffer_get_width(shm);
     int32_t height = wl_shm_buffer_get_height(shm);
     if (stride <= 0 || width <= 0 || height <= 0) {
-        LOG_ERROR("invalid, stride:%{public}d width:%{public}d height:%{public}d", stride, width, height);
+        LOG_ERROR("Invalid, stride:%{public}d width:%{public}d height:%{public}d", stride, width, height);
         return;
     }
 
@@ -583,7 +583,7 @@ void WaylandSurface::CopyBuffer(struct wl_shm_buffer *shm)
         if (parentSurfaceRes_ != nullptr) {
             surfaceParent->TriggerInnerCompose();
         }
-        LOG_DEBUG("return because without toplevel");
+        LOG_DEBUG("Return because without toplevel");
         return;
     }
     TriggerInnerCompose();
@@ -652,7 +652,7 @@ void WaylandSurface::ProcessSrcBitmap(SkCanvas* canvas, int32_t x, int32_t y)
 {
     std::lock_guard<std::mutex> lg(bitmapMutex_);
     canvas->drawBitmap(srcBitmap_, x, y);
-    LOG_DEBUG("draw child offsetx %{public}d, offsety %{public}d,", x, y);
+    LOG_DEBUG("Draw child offsetx %{public}d, offsety %{public}d,", x, y);
 }
 
 void WaylandSurface::TriggerInnerCompose()
