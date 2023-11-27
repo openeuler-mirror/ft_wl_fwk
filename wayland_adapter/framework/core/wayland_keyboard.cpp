@@ -54,7 +54,7 @@ void WaylandKeyboard::OnKeyboardKey(int32_t key, int32_t state, uint32_t time)
     uint32_t serial = wl_display_next_serial(display);
     int32_t newKey = TransferKeyValue(key);
     if (newKey == -1) {
-        LOG_ERROR("unknow keycode: %{public}u", key);
+        LOG_ERROR("Unknow keycode: %{public}u", key);
         return;
     }
     wl_keyboard_send_key(keyboard, serial, time, newKey, state);
