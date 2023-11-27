@@ -132,7 +132,6 @@ void WaylandXdgSurface::GetPopup(uint32_t id, struct wl_resource *parent, struct
         return;
     }
     popUp_ = popUp;
-    popUp_->UpdateSize(0, 0, xdgPositioner->GetSize().width, xdgPositioner->GetSize().height);
     role_ = SurfaceRole::XDG_POPUP;
 }
 
