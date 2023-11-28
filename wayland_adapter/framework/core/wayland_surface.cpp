@@ -124,10 +124,10 @@ bool InputEventConsumer::OnInputEvent(const std::shared_ptr<OHOS::MMI::PointerEv
             return;
         }
 
-        Rect rect = wlSurface_->GetWindowGeometry();
-        if (rect.x >= 0 && rect.y >= 0 && rect.width > 0 && rect.height > 0) {
-            pointerItem.SetWindowX(pointerItem.GetWindowX() + rect.x);
-            pointerItem.SetWindowY(pointerItem.GetWindowY() + rect.y);
+        OHOS::Rosen::Rect rect = wlSurface_->GetWindowGeometry();
+        if (rect.posX_ >= 0 && rect.posY_ >= 0 && rect.width_ > 0 && rect.height_ > 0) {
+            pointerItem.SetWindowX(pointerItem.GetWindowX() + rect.posX_);
+            pointerItem.SetWindowY(pointerItem.GetWindowY() + rect.posY_);
         }
 
         if (wlSeat->IsHotPlugIn()) {
@@ -320,10 +320,10 @@ void WaylandSurface::Attach(struct wl_resource *bufferResource, int32_t x, int32
 
 void WaylandSurface::Damage(int32_t x, int32_t y, int32_t width, int32_t height)
 {
-    new_.damage.x = x;
-    new_.damage.y = y;
-    new_.damage.width = static_cast<uint32_t>(width);
-    new_.damage.height = static_cast<uint32_t>(height);
+    new_.damage.posX_ = x;
+    new_.damage.posY_ = y;
+    new_.damage.width_ = static_cast<uint32_t>(width);
+    new_.damage.height_ = static_cast<uint32_t>(height);
 }
 
 void WaylandSurface::Frame(uint32_t callback)
@@ -363,7 +363,7 @@ void WaylandSurface::SetOpaqueRegion(struct wl_resource *regionResource)
 
     new_.opaqueRegion = region->GetRect();
     LOG_DEBUG("SetOpaqueRegion, rect: x %{public}d, y %{public}d, width %{public}d, height %{public}d.",
-        new_.opaqueRegion.x, new_.opaqueRegion.y, new_.opaqueRegion.width, new_.opaqueRegion.height);
+        new_.opaqueRegion.posX_, new_.opaqueRegion.posY_, new_.opaqueRegion.width_, new_.opaqueRegion.height_);
 }
 
 void WaylandSurface::SetInputRegion(struct wl_resource *regionResource)
@@ -381,7 +381,7 @@ void WaylandSurface::SetInputRegion(struct wl_resource *regionResource)
 
     new_.inputRegion = region->GetRect();
     LOG_DEBUG("SetInputRegion, rect: x %{public}d, y %{public}d, width %{public}d, height %{public}d.",
-        new_.inputRegion.x, new_.inputRegion.y, new_.inputRegion.width, new_.inputRegion.height);
+        new_.inputRegion.posX_, new_.inputRegion.posY_, new_.inputRegion.width_, new_.inputRegion.height_);
 }
 
 void WaylandSurface::Commit()
@@ -412,10 +412,10 @@ void WaylandSurface::SetBufferScale(int32_t scale)
 
 void WaylandSurface::DamageBuffer(int32_t x, int32_t y, int32_t width, int32_t height)
 {
-    new_.damageBuffer.x = x;
-    new_.damageBuffer.y = y;
-    new_.damageBuffer.width = static_cast<uint32_t>(width);
-    new_.damageBuffer.height = static_cast<uint32_t>(height);
+    new_.damageBuffer.posX_ = x;
+    new_.damageBuffer.posY_ = y;
+    new_.damageBuffer.width_ = static_cast<uint32_t>(width);
+    new_.damageBuffer.height_ = static_cast<uint32_t>(height);
 }
 
 void WaylandSurface::Offset(int32_t x, int32_t y)
@@ -528,10 +528,7 @@ void WaylandSurface::CreateWindow()
         cb(window_);
     }
 
-    OHOS::Rosen::Rect rect = window_->GetRect();
-    rect_.width = rect.width_;
-    rect_.height = rect.height_;
-
+    rect_= window_->GetRect();
     for (auto &cb : rectCallbacks_) {
         cb(rect_);
     }
@@ -586,10 +583,7 @@ void WaylandSurface::CopyBuffer(struct wl_shm_buffer *shm)
 
 void WaylandSurface::OnSizeChange(const OHOS::Rosen::Rect& rect, OHOS::Rosen::WindowSizeChangeReason reason)
 {
-    rect_.x = rect.posX_;
-    rect_.y = rect.posY_;
-    rect_.width = rect.width_;
-    rect_.height = rect.height_;
+    rect_ = rect;
     for (auto &cb : rectCallbacks_) {
         cb(rect_);
     }
@@ -600,14 +594,14 @@ void WaylandSurface::OnModeChange(OHOS::Rosen::WindowMode mode)
     LOG_DEBUG("OnModeChange, window mode is %{public}d, ignore", mode);
 }
 
-void WaylandSurface::SetWindowGeometry(Rect rect)
+void WaylandSurface::SetWindowGeometry(OHOS::Rosen::Rect rect)
 {
     LOG_DEBUG("Window x:%{public}d y:%{public}d width:%{public}d height:%{public}d",
-        rect.x, rect.y, rect.width, rect.height);
+        rect.posX_, rect.posY_, rect.width_, rect.height_);
     geometryRect_ = rect;
 }
 
-Rect WaylandSurface::GetWindowGeometry()
+OHOS::Rosen::Rect WaylandSurface::GetWindowGeometry()
 {
     return geometryRect_;
 }
@@ -658,11 +652,11 @@ void WaylandSurface::TriggerInnerCompose()
     }
     uint32_t width;
     uint32_t height;
-    bool vailedGeometry = (geometryRect_.x >= 0 && geometryRect_.y >= 0 &&
-                           geometryRect_.width > 0 && geometryRect_.height > 0);
+    bool vailedGeometry = (geometryRect_.posX_ >= 0 && geometryRect_.posY_ >= 0 &&
+                           geometryRect_.width_ > 0 && geometryRect_.height_ > 0);
     if (vailedGeometry) {
-        width = geometryRect_.width;
-        height = geometryRect_.height;
+        width = geometryRect_.width_;
+        height = geometryRect_.height_;
     } else {
         width = srcBitmap_.width();
         height = srcBitmap_.height();
@@ -684,8 +678,8 @@ void WaylandSurface::TriggerInnerCompose()
         paint.setAntiAlias(true);
         paint.setStyle(SkPaint::kFill_Style);
         canvas->drawBitmapRect(srcBitmap_,
-            SkRect::MakeXYWH(geometryRect_.x, geometryRect_.y, geometryRect_.width, geometryRect_.height),
-            SkRect::MakeXYWH(0, 0, geometryRect_.width, geometryRect_.height),
+            SkRect::MakeXYWH(geometryRect_.posX_, geometryRect_.posY_, geometryRect_.width_, geometryRect_.height_),
+            SkRect::MakeXYWH(0, 0, geometryRect_.width_, geometryRect_.height_),
             &paint);
     } else {
         canvas->drawBitmap(srcBitmap_, 0, 0);
@@ -697,7 +691,7 @@ void WaylandSurface::TriggerInnerCompose()
         LOG_DEBUG("Draw Child");
         auto surfaceChild = CastFromResource<WaylandSurface>(data.surface);
         if (vailedGeometry) {
-            surfaceChild->ProcessSrcBitmap(canvas, data.offsetX - geometryRect_.x, data.offsetY - geometryRect_.y);
+            surfaceChild->ProcessSrcBitmap(canvas, data.offsetX - geometryRect_.posX_, data.offsetY - geometryRect_.posY_);
         } else {
             surfaceChild->ProcessSrcBitmap(canvas, data.offsetX, data.offsetY);
         }

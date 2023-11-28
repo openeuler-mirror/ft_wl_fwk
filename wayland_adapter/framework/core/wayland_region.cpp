@@ -62,10 +62,10 @@ WaylandRegion::~WaylandRegion() noexcept {}
 void WaylandRegion::Add(int32_t x, int32_t y, int32_t width, int32_t height)
 {
     LOG_DEBUG("WaylandRegion::Add, cover");
-    rect_.x = x;
-    rect_.y = y;
-    rect_.width = width;
-    rect_.height = height;
+    rect_.posX_ = x;
+    rect_.posY_ = y;
+    rect_.width_ = width;
+    rect_.height_ = height;
 }
 
 void WaylandRegion::Subtract(int32_t x, int32_t y, int32_t width, int32_t height)
@@ -73,7 +73,7 @@ void WaylandRegion::Subtract(int32_t x, int32_t y, int32_t width, int32_t height
     LOG_DEBUG("WaylandRegion::Subtract, ignore");
 }
 
-Rect WaylandRegion::GetRect()
+OHOS::Rosen::Rect WaylandRegion::GetRect()
 {
     return rect_;
 }
