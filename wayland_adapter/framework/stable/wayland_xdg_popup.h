@@ -35,9 +35,11 @@ class WaylandXdgPopup : public WaylandResourceObject {
 public:
     static OHOS::sptr<WaylandXdgPopup> Create(const OHOS::sptr<WaylandXdgSurface> &xdgSurface,
         const OHOS::sptr<WaylandXdgSurface> &parentXdgSurface,
-        const OHOS::sptr<WaylandXdgPositioner> &positioner, uint32_t id);
+        const OHOS::sptr<WaylandXdgPositioner> &positioner, uint32_t id,
+        OHOS::sptr<OHOS::Rosen::WindowOption> windowOption);
     ~WaylandXdgPopup() noexcept;
-    void OnSurfaceCommitted();
+    void HandleCommit();
+    void SetWindow(OHOS::sptr<OHOS::Rosen::Window> window);
 
 private:
     WaylandXdgPopup(const OHOS::sptr<WaylandXdgSurface> &xdgSurface,
@@ -51,6 +53,8 @@ private:
 private:
     OHOS::wptr<WaylandXdgSurface> xdgSurface_;
     OHOS::wptr<WaylandXdgSurface> parentXdgSurface_;
+    OHOS::sptr<OHOS::Rosen::Window> window_;
+    Rect rect_;
 };
 } // namespace Wayland
 } // namespace FT
