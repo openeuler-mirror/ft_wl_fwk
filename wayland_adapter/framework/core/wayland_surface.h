@@ -141,7 +141,6 @@ private:
     std::shared_ptr<WindowOptionExt> windowOptionExt_;
     std::shared_ptr<OHOS::Rosen::RSSurfaceNode> surfaceNode_;
     std::shared_ptr<OHOS::Rosen::RSSurface> rsSurface_;
-    std::string windowTitle_;
     bool isSubSurface_ = false;
     std::map<wl_resource *, struct SubSurfaceData> childs_;
     struct wl_resource *parentSurfaceRes_ = nullptr;

@@ -271,18 +271,17 @@ WaylandSurface::WaylandSurface(struct wl_client *client, struct wl_resource *par
     : WaylandResourceObject(client, &wl_surface_interface, version, id, &IWaylandSurface::impl_),
       parent_(parent)
 {
-    windowTitle_ = std::to_string((long)((void *)this)) + std::string("-Untitled");
     windowOptionExt_ = std::make_shared<WindowOptionExt>();
     windowOption_ = new OHOS::Rosen::WindowOption();
     windowOption_->SetWindowType(OHOS::Rosen::WindowType::APP_WINDOW_BASE);
     windowOption_->SetWindowMode(OHOS::Rosen::WindowMode::WINDOW_MODE_FLOATING);
     windowOption_->SetMainHandlerAvailable(false);
-    LOG_DEBUG("enter : %{public}s.", windowTitle_.c_str());
+    LOG_DEBUG("enter");
 }
 
 WaylandSurface::~WaylandSurface() noexcept
 {
-    LOG_DEBUG("exit : %{public}s.", windowTitle_.c_str());
+    LOG_DEBUG("exit");
     if (window_ != nullptr) {
         if (listener_ != nullptr) {
             window_->UnregisterWindowChangeListener(listener_);
@@ -498,7 +497,7 @@ void WaylandSurface::CreateWindow()
         LOG_ERROR("Window::Create failed");
         return;
     }
-    LOG_DEBUG("Window::Create success, Title %{public}s.", windowTitle_.c_str());
+    LOG_DEBUG("Window::Create success");
     auto listener = std::make_shared<InputEventConsumer>(this);
     window_->SetInputEventConsumer(listener);
     window_->SetAPPWindowLabel(windowOptionExt_->title);
@@ -603,8 +602,8 @@ void WaylandSurface::OnModeChange(OHOS::Rosen::WindowMode mode)
 
 void WaylandSurface::SetWindowGeometry(Rect rect)
 {
-    LOG_DEBUG("Window %{public}s. x:%{public}d y:%{public}d width:%{public}d height:%{public}d",
-        windowTitle_.c_str(), rect.x, rect.y, rect.width, rect.height);
+    LOG_DEBUG("Window x:%{public}d y:%{public}d width:%{public}d height:%{public}d",
+        rect.x, rect.y, rect.width, rect.height);
     geometryRect_ = rect;
 }
 
