@@ -39,7 +39,7 @@ public:
         uint32_t version, uint32_t id);
     ~WaylandRegion() noexcept override;
 
-    Rect GetRect();
+    OHOS::Rosen::Rect GetRect();
 
 private:
     WaylandRegion(struct wl_client *client, struct wl_resource *parent, uint32_t version, uint32_t id);
@@ -49,7 +49,7 @@ private:
     void Subtract(int32_t x, int32_t y, int32_t width, int32_t height);
 
     struct wl_resource *parent_ = nullptr;
-    Rect rect_;
+    OHOS::Rosen::Rect rect_;
 };
 } // namespace Wayland
 } // namespace FT

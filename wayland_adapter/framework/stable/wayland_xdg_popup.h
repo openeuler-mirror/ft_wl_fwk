@@ -54,7 +54,7 @@ private:
     OHOS::wptr<WaylandXdgSurface> xdgSurface_;
     OHOS::wptr<WaylandXdgSurface> parentXdgSurface_;
     OHOS::sptr<OHOS::Rosen::Window> window_;
-    Rect rect_;
+    OHOS::Rosen::Rect rect_;
 };
 } // namespace Wayland
 } // namespace FT

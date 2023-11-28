@@ -65,8 +65,8 @@ public:
     void OnModeChange(OHOS::Rosen::WindowMode mode);
 
     // form xdgsruface
-    void SetWindowGeometry(Rect rect);
-    Rect GetWindowGeometry();
+    void SetWindowGeometry(OHOS::Rosen::Rect rect);
+    OHOS::Rosen::Rect GetWindowGeometry();
     void AddChild(struct wl_resource *child, int32_t x, int32_t y);
     void AddParent(struct wl_resource *parent);
     void ProcessSrcBitmap(SkCanvas* canvas, int32_t x, int32_t y);
@@ -127,8 +127,8 @@ private:
     std::list<SurfaceCommitCallback> commitCallbacks_;
     std::list<SurfaceRectCallback> rectCallbacks_;
     std::list<WindowCreateCallback> windowCreatebacks_;
-    Rect rect_;
-    Rect geometryRect_ = {0};
+    OHOS::Rosen::Rect rect_;
+    OHOS::Rosen::Rect geometryRect_ = {0};
     SurfaceState old_;
     SurfaceState new_;
     bool isPointerSurface_ = false;
@@ -141,7 +141,6 @@ private:
     std::shared_ptr<WindowOptionExt> windowOptionExt_;
     std::shared_ptr<OHOS::Rosen::RSSurfaceNode> surfaceNode_;
     std::shared_ptr<OHOS::Rosen::RSSurface> rsSurface_;
-    std::string windowTitle_;
     bool isSubSurface_ = false;
     std::map<wl_resource *, struct SubSurfaceData> childs_;
     struct wl_resource *parentSurfaceRes_ = nullptr;

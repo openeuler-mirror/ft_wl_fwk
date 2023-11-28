@@ -84,7 +84,7 @@ WaylandXdgSurface::WaylandXdgSurface(const OHOS::sptr<WaylandXdgWmObject> &xdgWm
       surface_(surface)
 {
     surface->AddCommitCallback([this]() { OnSurfaceCommit(); });
-    surface->AddRectCallback([this](Rect rect) { OnSurfaceRect(rect); });
+    surface->AddRectCallback([this](OHOS::Rosen::Rect rect) { OnSurfaceRect(rect); });
     surface->AddWindowCreateCallback([this](OHOS::sptr<OHOS::Rosen::Window> window) { OnWindowCreate(window); });
     windowTitle_ = std::to_string((long)((void *)this)) + std::string("-Untitled");
     LOG_DEBUG("enter : %{public}s.", windowTitle_.c_str());
@@ -139,7 +139,7 @@ void WaylandXdgSurface::SetWindowGeometry(int32_t x, int32_t y, int32_t width, i
         windowTitle_.c_str(), x, y, width, height);
     auto surface = surface_.promote();
     if (surface != nullptr) {
-        Rect rect = {x, y, static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
+        OHOS::Rosen::Rect rect = {x, y, static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
         surface->SetWindowGeometry(rect);
     }
 }
@@ -165,7 +165,7 @@ void WaylandXdgSurface::OnSurfaceCommit()
     xdg_surface_send_configure(WlResource(), wl_display_next_serial(WlDisplay()));
 }
 
-void WaylandXdgSurface::OnSurfaceRect(Rect rect)
+void WaylandXdgSurface::OnSurfaceRect(OHOS::Rosen::Rect rect)
 {
     LOG_DEBUG("Window %{public}s.", windowTitle_.c_str());
     if (role_ == SurfaceRole::XDG_TOPLEVEL) {

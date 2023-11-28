@@ -191,10 +191,10 @@ void WaylandXdgPositioner::SetAnchorRect(int32_t x, int32_t y, int32_t width, in
         return;
     }
 
-    anchorRect_.x = x;
-    anchorRect_.y = y;
-    anchorRect_.width = width;
-    anchorRect_.height = height;
+    anchorRect_.posX_ = x;
+    anchorRect_.posY_ = y;
+    anchorRect_.width_ = width;
+    anchorRect_.height_ = height;
 }
 
 void WaylandXdgPositioner::SetAnchor(uint32_t anchor)

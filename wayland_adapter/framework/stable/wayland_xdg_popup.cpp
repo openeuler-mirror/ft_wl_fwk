@@ -64,7 +64,7 @@ OHOS::sptr<WaylandXdgPopup> WaylandXdgPopup::Create(const OHOS::sptr<WaylandXdgS
         return nullptr;
     }
 
-    windowOption->SetWindowRect({positioner->GetAnchorRect().x, positioner->GetAnchorRect().y,
+    windowOption->SetWindowRect({positioner->GetAnchorRect().posX_, positioner->GetAnchorRect().posY_,
         positioner->GetSize().width, positioner->GetSize().height});
     auto xdgPopUp = OHOS::sptr<WaylandXdgPopup>(new WaylandXdgPopup(xdgSurface, parentXdgSurface, positioner, id));
     WaylandObjectsPool::GetInstance().AddObject(ObjectId(xdgPopUp->WlClient(), xdgPopUp->Id()), xdgPopUp);

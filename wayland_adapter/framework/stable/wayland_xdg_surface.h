@@ -50,7 +50,7 @@ private:
     void SetWindowGeometry(int32_t x, int32_t y, int32_t width, int32_t height);
     void AckConfigure(uint32_t serial);
     void OnSurfaceCommit();
-    void OnSurfaceRect(Rect rect);
+    void OnSurfaceRect(OHOS::Rosen::Rect rect);
     void OnWindowCreate(OHOS::sptr<OHOS::Rosen::Window> window);
 
     SurfaceRole role_ = SurfaceRole::NONE;
