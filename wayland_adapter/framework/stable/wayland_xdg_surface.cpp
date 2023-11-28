@@ -125,12 +125,11 @@ void WaylandXdgSurface::GetPopup(uint32_t id, struct wl_resource *parent, struct
         return;
     }
 
-    auto popUp = WaylandXdgPopup::Create(this, parentXdgSurface, xdgPositioner, id);
-    if (popUp == nullptr) {
+    popUp_ = WaylandXdgPopup::Create(this, parentXdgSurface, xdgPositioner, id, windowOption_);
+    if (popUp_ == nullptr) {
         LOG_ERROR("no memory");
         return;
     }
-    popUp_ = popUp;
     role_ = SurfaceRole::XDG_POPUP;
 }
 
@@ -156,6 +155,11 @@ void WaylandXdgSurface::OnSurfaceCommit()
         if (topLevel != nullptr) {
             topLevel->HandleCommit();
         }
+    } else if (role_ == SurfaceRole::XDG_POPUP) {
+        auto popup = popUp_.promote();
+        if (popup != nullptr) {
+            popup->HandleCommit();
+        }
     }
 
     xdg_surface_send_configure(WlResource(), wl_display_next_serial(WlDisplay()));
@@ -180,6 +184,11 @@ void WaylandXdgSurface::OnWindowCreate(OHOS::sptr<OHOS::Rosen::Window> window)
         auto topLevel = toplevel_.promote();
         if (topLevel != nullptr) {
             topLevel->SetWindow(window);
+        }
+    } else if (role_ == SurfaceRole::XDG_POPUP) {
+        auto popup = popUp_.promote();
+        if (popup != nullptr) {
+            popup->SetWindow(window);
         }
     }
 }
