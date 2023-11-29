@@ -190,7 +190,6 @@ void WaylandSeat::GetCapabilities()
     int32_t DevNums = 0;
     int32_t hasGetDevNums = 0;
     bool isGetIds = false;
-    int32_t wait_count = 0;
     uint32_t oldCaps = caps_;
     caps_ = 0;
 
@@ -208,7 +207,20 @@ void WaylandSeat::GetCapabilities()
         DevNums = ids.size();
         isGetIds = true;
     };
-    (void)InputManager::GetInstance()->GetDeviceIds(GetDeviceIdsCb);
+
+    int32_t ret = InputManager::GetInstance()->GetDeviceIds(GetDeviceIdsCb);
+    int32_t wait_count = 0;
+    while (ret != 0 && wait_count < 10) {
+        usleep(3 * 1000); // wait for MMI service online
+        ret = InputManager::GetInstance()->GetDeviceIds(GetDeviceIdsCb);
+        wait_count++;
+    }
+    if (ret != 0) {
+        LOG_ERROR("Failed to GetDeviceIds, MMI service offline");
+        return;
+    }
+
+    wait_count = 0;
     while (!isGetIds && wait_count < 100) {
         usleep(3 * 1000); // wait for GetDeviceIdsCb finish
         wait_count++;
