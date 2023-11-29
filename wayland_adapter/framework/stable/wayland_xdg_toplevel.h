@@ -60,7 +60,6 @@ public:
     void Move(uint32_t serial);
     void Resize(uint32_t serial, uint32_t edges);
     void SendConfigure();
-    void HandleCommit();
     void SetRect(OHOS::Rosen::Rect rect);
     void SetWindow(OHOS::sptr<OHOS::Rosen::Window> window);
 

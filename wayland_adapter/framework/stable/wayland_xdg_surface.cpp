@@ -98,6 +98,15 @@ WaylandXdgSurface::~WaylandXdgSurface() noexcept
     }
 }
 
+OHOS::Rosen::Rect WaylandXdgSurface::GetRect()
+{
+    OHOS::Rosen::Rect rect;
+    if (window_ != nullptr) {
+        rect = window_->GetRect();
+    }
+    return rect;
+}
+
 void WaylandXdgSurface::GetToplevel(uint32_t id)
 {
     LOG_DEBUG("Window %{public}s.", windowTitle_.c_str());
@@ -150,19 +159,27 @@ void WaylandXdgSurface::AckConfigure(uint32_t serial)
 
 void WaylandXdgSurface::OnSurfaceCommit()
 {
-    if (role_ == SurfaceRole::XDG_TOPLEVEL) {
-        auto topLevel = toplevel_.promote();
-        if (topLevel != nullptr) {
-            topLevel->HandleCommit();
-        }
-    } else if (role_ == SurfaceRole::XDG_POPUP) {
-        auto popup = popUp_.promote();
-        if (popup != nullptr) {
-            popup->HandleCommit();
-        }
+    if (window_ == nullptr) {
+        LOG_ERROR("window_ is nullptr");
+        return;
     }
 
-    xdg_surface_send_configure(WlResource(), wl_display_next_serial(WlDisplay()));
+    if (isFirstCommit_) {
+        isFirstCommit_ = false;
+        OHOS::Rosen::Rect rect = window_->GetRect();
+        if (role_ == SurfaceRole::XDG_TOPLEVEL) {
+            auto topLevel = toplevel_.promote();
+            if (topLevel != nullptr) {
+                topLevel->SetRect(rect);
+            }
+        } else if (role_ == SurfaceRole::XDG_POPUP) {
+            auto popup = popUp_.promote();
+            if (popup != nullptr) {
+                popup->SetRect(rect);
+            }
+        }
+        xdg_surface_send_configure(WlResource(), wl_display_next_serial(WlDisplay()));
+    }
 }
 
 void WaylandXdgSurface::OnSurfaceRect(OHOS::Rosen::Rect rect)
@@ -172,9 +189,14 @@ void WaylandXdgSurface::OnSurfaceRect(OHOS::Rosen::Rect rect)
         auto topLevel = toplevel_.promote();
         if (topLevel != nullptr) {
             topLevel->SetRect(rect);
-            xdg_surface_send_configure(WlResource(), wl_display_next_serial(WlDisplay()));
+        }
+    } else if (role_ == SurfaceRole::XDG_POPUP) {
+        auto popup = popUp_.promote();
+        if (popup != nullptr) {
+            popup->SetRect(rect);
         }
     }
+    xdg_surface_send_configure(WlResource(), wl_display_next_serial(WlDisplay()));
 }
 
 void WaylandXdgSurface::OnWindowCreate(OHOS::sptr<OHOS::Rosen::Window> window)

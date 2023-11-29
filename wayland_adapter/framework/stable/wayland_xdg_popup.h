@@ -38,7 +38,8 @@ public:
         const OHOS::sptr<WaylandXdgPositioner> &positioner, uint32_t id,
         OHOS::sptr<OHOS::Rosen::WindowOption> windowOption);
     ~WaylandXdgPopup() noexcept;
-    void HandleCommit();
+    void SendConfigure();
+    void SetRect(OHOS::Rosen::Rect rect);
     void SetWindow(OHOS::sptr<OHOS::Rosen::Window> window);
 
 private:
