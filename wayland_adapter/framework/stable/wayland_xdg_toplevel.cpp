@@ -284,11 +284,6 @@ void WaylandXdgToplevel::SendConfigure()
     wl_array_release(&states);
 }
 
-void WaylandXdgToplevel::HandleCommit()
-{
-    SendConfigure();
-}
-
 void WaylandXdgToplevel::SetRect(OHOS::Rosen::Rect rect)
 {
     rect_ = rect;

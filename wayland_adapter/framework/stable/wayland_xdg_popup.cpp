@@ -64,8 +64,14 @@ OHOS::sptr<WaylandXdgPopup> WaylandXdgPopup::Create(const OHOS::sptr<WaylandXdgS
         return nullptr;
     }
 
-    windowOption->SetWindowRect({positioner->GetAnchorRect().posX_, positioner->GetAnchorRect().posY_,
-        positioner->GetSize().width, positioner->GetSize().height});
+    OHOS::Rosen::Rect anchorRect = positioner->GetAnchorRect();
+    OHOS::Rosen::Rect parentRect = parentXdgSurface->GetRect();
+    Size size = positioner->GetSize();
+    Offset offset= positioner->GetOffset();
+
+    windowOption->SetWindowRect({parentRect.posX_ + anchorRect.posX_ + offset.x,
+        parentRect.posY_ + anchorRect.posY_ + offset.y,
+        size.width, size.height});
     auto xdgPopUp = OHOS::sptr<WaylandXdgPopup>(new WaylandXdgPopup(xdgSurface, parentXdgSurface, positioner, id));
     WaylandObjectsPool::GetInstance().AddObject(ObjectId(xdgPopUp->WlClient(), xdgPopUp->Id()), xdgPopUp);
     return xdgPopUp;
@@ -87,11 +93,15 @@ WaylandXdgPopup::~WaylandXdgPopup() noexcept
     LOG_DEBUG("WaylandXdgPopup  dtor.");
 }
 
-void WaylandXdgPopup::HandleCommit()
+void WaylandXdgPopup::SendConfigure()
 {
+    xdg_popup_send_configure(WlResource(), rect_.posX_, rect_.posY_, rect_.width_, rect_.height_);
+}
 
-    OHOS::Rosen::Rect rect = window_->GetRect();
-    xdg_popup_send_configure(WlResource(), rect.posX_, rect.posY_, rect.width_, rect.height_);
+void WaylandXdgPopup::SetRect(OHOS::Rosen::Rect rect)
+{
+    rect_ = rect;
+    SendConfigure();
 }
 
 void WaylandXdgPopup::SetWindow(OHOS::sptr<OHOS::Rosen::Window> window)

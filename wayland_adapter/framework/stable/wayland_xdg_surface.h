@@ -42,6 +42,8 @@ public:
     WaylandXdgSurface(const OHOS::sptr<WaylandXdgWmObject> &xdgWm, const OHOS::sptr<WaylandSurface> &surface, uint32_t id);
     ~WaylandXdgSurface() noexcept override;
 
+    OHOS::Rosen::Rect GetRect();
+
 private:
     friend struct IWaylandXdgSurface;
 
@@ -62,6 +64,7 @@ private:
     OHOS::sptr<OHOS::Rosen::Window> window_;
     OHOS::sptr<OHOS::Rosen::WindowOption> windowOption_;
     std::shared_ptr<WindowOptionExt> windowOptionExt_;
+    bool isFirstCommit_ = true;
 };
 } // namespace Wayland
 } // namespace FT
