@@ -208,11 +208,11 @@ void WaylandSeat::GetCapabilities()
         isGetIds = true;
     };
 
-    int32_t ret = -1;
+    int32_t ret = InputManager::GetInstance()->GetDeviceIds(GetDeviceIdsCb);
     int32_t wait_count = 0;
-    while (ret != 0 && wait_count < 100) {
+    while (ret != 0 && wait_count < 10) {
+        usleep(3 * 1000); // wait for MMI service online
         ret = InputManager::GetInstance()->GetDeviceIds(GetDeviceIdsCb);
-        usleep(30 * 1000); // wait for MMI service online
         wait_count++;
     }
     if (ret != 0) {
