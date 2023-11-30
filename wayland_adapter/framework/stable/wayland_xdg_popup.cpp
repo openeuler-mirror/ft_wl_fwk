@@ -67,11 +67,70 @@ OHOS::sptr<WaylandXdgPopup> WaylandXdgPopup::Create(const OHOS::sptr<WaylandXdgS
     OHOS::Rosen::Rect anchorRect = positioner->GetAnchorRect();
     OHOS::Rosen::Rect parentRect = parentXdgSurface->GetRect();
     Size size = positioner->GetSize();
-    Offset offset= positioner->GetOffset();
+    Offset offset = positioner->GetOffset();
+    OHOS::Rosen::Rect rect = {offset.x + parentRect.posX_, offset.y + parentRect.posY_, size.width, size.height};
 
-    windowOption->SetWindowRect({parentRect.posX_ + anchorRect.posX_ + offset.x,
-        parentRect.posY_ + anchorRect.posY_ + offset.y,
-        size.width, size.height});
+    switch (positioner->GetAnchor()) {
+        case XDG_POSITIONER_ANCHOR_TOP:
+        case XDG_POSITIONER_ANCHOR_TOP_LEFT:
+        case XDG_POSITIONER_ANCHOR_TOP_RIGHT:
+            rect.posY_ += anchorRect.posY_;
+            break;
+        case XDG_POSITIONER_ANCHOR_BOTTOM:
+        case XDG_POSITIONER_ANCHOR_BOTTOM_LEFT:
+        case XDG_POSITIONER_ANCHOR_BOTTOM_RIGHT:
+            rect.posY_ += anchorRect.posY_ + anchorRect.height_;
+            break;
+        default:
+            rect.posY_ += anchorRect.posY_ + anchorRect.height_ / 2;
+    }
+
+    switch (positioner->GetAnchor()) {
+        case XDG_POSITIONER_ANCHOR_LEFT:
+        case XDG_POSITIONER_ANCHOR_TOP_LEFT:
+        case XDG_POSITIONER_ANCHOR_BOTTOM_LEFT:
+            rect.posX_ += anchorRect.posX_;
+            break;
+        case XDG_POSITIONER_ANCHOR_RIGHT:
+        case XDG_POSITIONER_ANCHOR_TOP_RIGHT:
+        case XDG_POSITIONER_ANCHOR_BOTTOM_RIGHT:
+            rect.posX_ += anchorRect.posX_ + anchorRect.width_;
+            break;
+        default:
+            rect.posX_ += anchorRect.posX_ + anchorRect.width_ / 2;
+    }
+
+    switch (positioner->GetGravity()) {
+        case XDG_POSITIONER_GRAVITY_TOP:
+        case XDG_POSITIONER_GRAVITY_TOP_LEFT:
+        case XDG_POSITIONER_GRAVITY_TOP_RIGHT:
+            rect.posY_ -= rect.height_;
+            break;
+        case XDG_POSITIONER_GRAVITY_BOTTOM:
+        case XDG_POSITIONER_GRAVITY_BOTTOM_LEFT:
+        case XDG_POSITIONER_GRAVITY_BOTTOM_RIGHT:
+            rect.posY_ = rect.posY_;
+            break;
+        default:
+            rect.posY_ -= rect.height_ / 2;
+    }
+
+    switch (positioner->GetGravity()) {
+        case XDG_POSITIONER_GRAVITY_LEFT:
+        case XDG_POSITIONER_GRAVITY_TOP_LEFT:
+        case XDG_POSITIONER_GRAVITY_BOTTOM_LEFT:
+            rect.posX_ -= rect.width_;
+            break;
+        case XDG_POSITIONER_GRAVITY_RIGHT:
+        case XDG_POSITIONER_GRAVITY_TOP_RIGHT:
+        case XDG_POSITIONER_GRAVITY_BOTTOM_RIGHT:
+            rect.posX_ = rect.posX_;
+            break;
+        default:
+            rect.posX_ -= rect.width_ / 2;
+    }
+
+    windowOption->SetWindowRect(rect);
     auto xdgPopUp = OHOS::sptr<WaylandXdgPopup>(new WaylandXdgPopup(xdgSurface, parentXdgSurface, positioner, id));
     WaylandObjectsPool::GetInstance().AddObject(ObjectId(xdgPopUp->WlClient(), xdgPopUp->Id()), xdgPopUp);
     return xdgPopUp;
