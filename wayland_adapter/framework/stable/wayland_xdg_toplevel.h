@@ -80,6 +80,10 @@ private:
         bool fullscreen = false;
         bool resizing = true;
     } state_;
+    uint32_t minW_ = 0;
+    uint32_t minH_ = 0;
+    uint32_t maxW_ = 0;
+    uint32_t maxH_ = 0;
 };
 } // namespace Wayland
 } // namespace FT
