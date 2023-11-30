@@ -60,8 +60,7 @@ public:
     void Move(uint32_t serial);
     void Resize(uint32_t serial, uint32_t edges);
     void SendConfigure();
-    void HandleCommit();
-    void SetRect(Rect rect);
+    void SetRect(OHOS::Rosen::Rect rect);
     void SetWindow(OHOS::sptr<OHOS::Rosen::Window> window);
 
 private:
@@ -70,7 +69,7 @@ private:
 
     OHOS::wptr<WaylandXdgSurface> xdgSurface_;
     std::string windowTitle_ = "unknow";
-    Rect rect_;
+    OHOS::Rosen::Rect rect_;
     OHOS::sptr<OHOS::Rosen::Window> window_;
     OHOS::sptr<OHOS::Rosen::WindowOption> windowOption_;
     std::shared_ptr<WindowOptionExt> windowOptionExt_;

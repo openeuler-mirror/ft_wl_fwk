@@ -42,6 +42,8 @@ public:
     WaylandXdgSurface(const OHOS::sptr<WaylandXdgWmObject> &xdgWm, const OHOS::sptr<WaylandSurface> &surface, uint32_t id);
     ~WaylandXdgSurface() noexcept override;
 
+    OHOS::Rosen::Rect GetRect();
+
 private:
     friend struct IWaylandXdgSurface;
 
@@ -50,7 +52,7 @@ private:
     void SetWindowGeometry(int32_t x, int32_t y, int32_t width, int32_t height);
     void AckConfigure(uint32_t serial);
     void OnSurfaceCommit();
-    void OnSurfaceRect(Rect rect);
+    void OnSurfaceRect(OHOS::Rosen::Rect rect);
     void OnWindowCreate(OHOS::sptr<OHOS::Rosen::Window> window);
 
     SurfaceRole role_ = SurfaceRole::NONE;
@@ -62,6 +64,7 @@ private:
     OHOS::sptr<OHOS::Rosen::Window> window_;
     OHOS::sptr<OHOS::Rosen::WindowOption> windowOption_;
     std::shared_ptr<WindowOptionExt> windowOptionExt_;
+    bool isFirstCommit_ = true;
 };
 } // namespace Wayland
 } // namespace FT

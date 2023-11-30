@@ -23,20 +23,6 @@
 
 namespace FT {
 namespace Wayland {
-struct Rect {
-    int32_t x = 0;
-    int32_t y = 0;
-    uint32_t width = 0;
-    uint32_t height = 0;
-    void Reset()
-    {
-        x = 0;
-        y = 0;
-        width = 0;
-        height = 0;
-    }
-};
-
 struct Offset {
     int32_t x = 0;
     int32_t y = 0;
@@ -65,7 +51,7 @@ struct WindowOptionExt {
 };
 
 using SurfaceCommitCallback = std::function<void()>;
-using SurfaceRectCallback = std::function<void(Rect)>;
+using SurfaceRectCallback = std::function<void(OHOS::Rosen::Rect)>;
 using WindowCreateCallback = std::function<void(OHOS::sptr<OHOS::Rosen::Window>)>;
 
 class FrameCallback final : public WaylandResourceObject {
@@ -87,25 +73,37 @@ private:
 
 struct SurfaceState {
     struct wl_resource *buffer = nullptr;
-    Rect damage;
     wl_output_transform transform = WL_OUTPUT_TRANSFORM_NORMAL;
     int32_t scale = 0;
-    Rect damageBuffer;
     int32_t offsetX = 0;
     int32_t offsetY = 0;
     OHOS::sptr<FrameCallback> cb;
-    Rect inputRegion;
-    Rect opaqueRegion;
+    OHOS::Rosen::Rect damage;
+    OHOS::Rosen::Rect damageBuffer;
+    OHOS::Rosen::Rect inputRegion;
+    OHOS::Rosen::Rect opaqueRegion;
     void Reset()
     {
-        damage.Reset();
         transform = WL_OUTPUT_TRANSFORM_NORMAL;
         scale = 0;
-        damageBuffer.Reset();
         offsetX = 0;
         offsetY = 0;
-        inputRegion.Reset();
-        opaqueRegion.Reset();
+        damage.posX_ = 0;
+        damage.posY_ = 0;
+        damage.width_ = 0;
+        damage.height_ = 0;
+        damageBuffer.posX_ = 0;
+        damageBuffer.posY_ = 0;
+        damageBuffer.width_ = 0;
+        damageBuffer.height_ = 0;
+        inputRegion.posX_ = 0;
+        inputRegion.posY_ = 0;
+        inputRegion.width_ = 0;
+        inputRegion.height_ = 0;
+        opaqueRegion.posX_ = 0;
+        opaqueRegion.posY_ = 0;
+        opaqueRegion.width_ = 0;
+        opaqueRegion.height_ = 0;
     }
 };
 

@@ -263,17 +263,6 @@ void WaylandXdgToplevel::SetMinimized()
 
 void WaylandXdgToplevel::SendConfigure()
 {
-    SetRect(rect_);
-}
-
-void WaylandXdgToplevel::HandleCommit()
-{
-    SendConfigure();
-}
-
-void WaylandXdgToplevel::SetRect(Rect rect)
-{
-    rect_ = rect;
     struct wl_array states;
     uint32_t *s;
     wl_array_init(&states);
@@ -291,8 +280,14 @@ void WaylandXdgToplevel::SetRect(Rect rect)
     }
     s = static_cast<uint32_t *>(wl_array_add(&states, sizeof(uint32_t)));
     *s = XDG_TOPLEVEL_STATE_ACTIVATED;
-    xdg_toplevel_send_configure(WlResource(), rect.width, rect.height, &states);
+    xdg_toplevel_send_configure(WlResource(), rect_.width_, rect_.height_, &states);
     wl_array_release(&states);
+}
+
+void WaylandXdgToplevel::SetRect(OHOS::Rosen::Rect rect)
+{
+    rect_ = rect;
+    SendConfigure();
 }
 
 void WaylandXdgToplevel::SetWindow(OHOS::sptr<OHOS::Rosen::Window> window)
