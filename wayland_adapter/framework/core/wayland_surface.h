@@ -104,22 +104,24 @@ private:
 
     class WaylandWindowListener : public OHOS::Rosen::IWindowChangeListener {
     public:
-        WaylandWindowListener(OHOS::sptr<WaylandSurface> wlSurface) : wlSurface_(wlSurface) {}
+        WaylandWindowListener(OHOS::wptr<WaylandSurface> wlSurface) : wlSurface_(wlSurface) {}
         ~WaylandWindowListener() = default;
         void OnSizeChange(OHOS::Rosen::Rect rect, OHOS::Rosen::WindowSizeChangeReason reason) override
         {
-            if (wlSurface_ != nullptr) {
-                wlSurface_->OnSizeChange(rect, reason);
+            auto wlSurface = wlSurface_.promote();
+            if (wlSurface != nullptr) {
+                wlSurface->OnSizeChange(rect, reason);
             }
         }
         void OnModeChange(OHOS::Rosen::WindowMode mode) override
         {
-            if (wlSurface_ != nullptr) {
-                wlSurface_->OnModeChange(mode);
+            auto wlSurface = wlSurface_.promote();
+            if (wlSurface != nullptr) {
+                wlSurface->OnModeChange(mode);
             }
         }
     private:
-        OHOS::sptr<WaylandSurface> wlSurface_ = nullptr;
+        OHOS::wptr<WaylandSurface> wlSurface_ = nullptr;
     };
 
     OHOS::sptr<WaylandWindowListener> listener_;
