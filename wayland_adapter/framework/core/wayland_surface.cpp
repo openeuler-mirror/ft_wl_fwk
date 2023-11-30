@@ -33,7 +33,7 @@ namespace {
 class InputEventConsumer : public OHOS::Rosen::IInputEventConsumer
 {
 public:
-    InputEventConsumer(OHOS::sptr<WaylandSurface> wlSurface)
+    InputEventConsumer(OHOS::wptr<WaylandSurface> wlSurface)
     {
         wlSurface_ = wlSurface;
     }
@@ -42,7 +42,7 @@ public:
     bool OnInputEvent(const std::shared_ptr<OHOS::MMI::AxisEvent>& axisEvent) const override;
     bool OnInputEvent(const std::shared_ptr<OHOS::MMI::PointerEvent>& pointerEvent) const override;
 private:
-    OHOS::sptr<WaylandSurface> wlSurface_ = nullptr;
+    OHOS::wptr<WaylandSurface> wlSurface_ = nullptr;
     int32_t MapPointerActionButton(int32_t PointerActionButtonType) const;
     int32_t MapKeyAction(int32_t keyAction) const;
     const std::map<uint32_t, int32_t> ptrActionMap_ = {
@@ -82,8 +82,12 @@ bool InputEventConsumer::OnInputEvent(const std::shared_ptr<OHOS::MMI::KeyEvent>
         if (wlSeat == nullptr) {
             return;
         }
+        auto wlSurface = wlSurface_.promote();
+        if (wlSurface == nullptr) {
+            return;
+        }
         std::list<OHOS::sptr<WaylandKeyboard>> keyboardList;
-        wlSeat->GetKeyboardResource(wlSurface_->WlClient(), keyboardList);
+        wlSeat->GetKeyboardResource(wlSurface->WlClient(), keyboardList);
         int32_t keyAction = MapKeyAction(keyEvent->GetKeyAction());
         if (keyAction == INVALID_KEYACTION) {
             return;
@@ -92,7 +96,7 @@ bool InputEventConsumer::OnInputEvent(const std::shared_ptr<OHOS::MMI::KeyEvent>
         for (auto &keyboard : keyboardList) {
             keyboard->OnKeyboardKey(keyEvent->GetKeyCode(), keyAction, keyEvent->GetActionTime() / US_TO_MS);
         }
-        wl_display_flush_clients(wlSurface_->WlDisplay());
+        wl_display_flush_clients(wlSurface->WlDisplay());
     });
 
     return true;
@@ -112,10 +116,14 @@ bool InputEventConsumer::OnInputEvent(const std::shared_ptr<OHOS::MMI::PointerEv
         if (wlSeat == nullptr) {
             return;
         }
+        auto wlSurface = wlSurface_.promote();
+        if (wlSurface == nullptr) {
+            return;
+        }
         std::list<OHOS::sptr<WaylandPointer>> pointerList;
         std::list<OHOS::sptr<WaylandKeyboard>> keyboardList;
-        wlSeat->GetPointerResource(wlSurface_->WlClient(), pointerList);
-        wlSeat->GetKeyboardResource(wlSurface_->WlClient(), keyboardList);
+        wlSeat->GetPointerResource(wlSurface->WlClient(), pointerList);
+        wlSeat->GetKeyboardResource(wlSurface->WlClient(), keyboardList);
 
         OHOS::MMI::PointerEvent::PointerItem pointerItem;
         int32_t pointId = pointerEvent->GetPointerId();
@@ -124,7 +132,7 @@ bool InputEventConsumer::OnInputEvent(const std::shared_ptr<OHOS::MMI::PointerEv
             return;
         }
 
-        OHOS::Rosen::Rect rect = wlSurface_->GetWindowGeometry();
+        OHOS::Rosen::Rect rect = wlSurface->GetWindowGeometry();
         if (rect.posX_ >= 0 && rect.posY_ >= 0 && rect.width_ > 0 && rect.height_ > 0) {
             pointerItem.SetWindowX(pointerItem.GetWindowX() + rect.posX_);
             pointerItem.SetWindowY(pointerItem.GetWindowY() + rect.posY_);
@@ -132,27 +140,27 @@ bool InputEventConsumer::OnInputEvent(const std::shared_ptr<OHOS::MMI::PointerEv
 
         if (wlSeat->IsHotPlugIn()) {
             for (auto &pointer : pointerList) {
-                pointer->OnPointerEnter(pointerItem.GetWindowX(), pointerItem.GetWindowY(), wlSurface_->WlResource());
+                pointer->OnPointerEnter(pointerItem.GetWindowX(), pointerItem.GetWindowY(), wlSurface->WlResource());
             }
             for (auto &keyboard : keyboardList) {
-                keyboard->OnKeyboardEnter(wlSurface_->WlResource());
+                keyboard->OnKeyboardEnter(wlSurface->WlResource());
             }
             wlSeat->ResetHotPlugIn();
         }
 
         if (pointerEvent->GetPointerAction() ==  OHOS::MMI::PointerEvent::POINTER_ACTION_ENTER_WINDOW) {
             for (auto &pointer : pointerList) {
-                pointer->OnPointerEnter(pointerItem.GetWindowX(), pointerItem.GetWindowY(), wlSurface_->WlResource());
+                pointer->OnPointerEnter(pointerItem.GetWindowX(), pointerItem.GetWindowY(), wlSurface->WlResource());
             }
             for (auto &keyboard : keyboardList) {
-                keyboard->OnKeyboardEnter(wlSurface_->WlResource());
+                keyboard->OnKeyboardEnter(wlSurface->WlResource());
             }
         } else if (pointerEvent->GetPointerAction() ==  OHOS::MMI::PointerEvent::POINTER_ACTION_LEAVE_WINDOW) {
             for (auto &pointer : pointerList) {
-                pointer->OnPointerLeave(wlSurface_->WlResource());
+                pointer->OnPointerLeave(wlSurface->WlResource());
             }
             for (auto &keyboard : keyboardList) {
-                keyboard->OnKeyboardLeave(wlSurface_->WlResource());
+                keyboard->OnKeyboardLeave(wlSurface->WlResource());
             }
         } else if (pointerEvent->GetPointerAction() == OHOS::MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN ||
             pointerEvent->GetPointerAction() == OHOS::MMI::PointerEvent::POINTER_ACTION_BUTTON_UP) {
@@ -167,7 +175,7 @@ bool InputEventConsumer::OnInputEvent(const std::shared_ptr<OHOS::MMI::PointerEv
                 pointer->OnPointerMotionAbsolute(pointerEvent->GetActionTime() / US_TO_MS, pointerItem.GetWindowX(), pointerItem.GetWindowY());
             }
         }
-        wl_display_flush_clients(wlSurface_->WlDisplay());
+        wl_display_flush_clients(wlSurface->WlDisplay());
     });
     return true;
 }
