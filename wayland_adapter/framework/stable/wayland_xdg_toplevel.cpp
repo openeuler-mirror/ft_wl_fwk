@@ -192,11 +192,27 @@ void WaylandXdgToplevel::SetAppId(const char *appId)
 
 void WaylandXdgToplevel::SetMaxSize(int32_t width, int32_t height)
 {
+    maxW_ = width;
+    maxH_ = height;
+    if (maxW_ == 0 ||   maxH_ == 0 ){
+        return;
+    }
+    if (minW_ == maxW_ && minH_ == maxH_) {
+        windowOption_->SetDragHotZoneNone(true);
+    }
     LOG_DEBUG("Window %{public}s.", windowTitle_.c_str());
 }
 
 void WaylandXdgToplevel::SetMinSize(int32_t width, int32_t height)
 {
+    minW_ = width;
+    minH_ = height;
+    if (minW_ == 0 ||   minH_ == 0 ){
+        return;
+    }
+    if (minW_ == maxW_ && minH_ == maxH_) {
+        windowOption_->SetDragHotZoneNone(true);
+    }
     LOG_DEBUG("Window %{public}s.", windowTitle_.c_str());
 }
 
