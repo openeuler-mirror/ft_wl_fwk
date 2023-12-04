@@ -288,12 +288,10 @@ WaylandSurface::WaylandSurface(struct wl_client *client, struct wl_resource *par
     windowOption_->SetWindowType(OHOS::Rosen::WindowType::APP_WINDOW_BASE);
     windowOption_->SetWindowMode(OHOS::Rosen::WindowMode::WINDOW_MODE_FLOATING);
     windowOption_->SetMainHandlerAvailable(false);
-    LOG_DEBUG("Enter : %{public}s.", windowTitle_.c_str());
 }
 
 WaylandSurface::~WaylandSurface() noexcept
 {
-    LOG_DEBUG("Exit : %{public}s.", windowTitle_.c_str());
     if (window_ != nullptr) {
         if (listener_ != nullptr) {
             window_->UnregisterWindowChangeListener(listener_);
