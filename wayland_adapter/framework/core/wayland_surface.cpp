@@ -30,6 +30,10 @@ namespace {
     constexpr uint32_t US_TO_MS = 1000;
 }
 
+#ifdef ENABLE_GPU
+static std::unique_ptr<OHOS::Rosen::RenderContext> render_context_global;
+#endif
+
 class InputEventConsumer : public OHOS::Rosen::IInputEventConsumer
 {
 public:
@@ -527,9 +531,11 @@ void WaylandSurface::CreateWindow()
     }
 
 #ifdef ENABLE_GPU
-    renderContext_ = std::make_unique<OHOS::Rosen::RenderContext>();
-    renderContext_->InitializeEglContext();
-    rsSurface_->SetRenderContext(renderContext_.get());
+    if (render_context_global == nullptr) {
+        render_context_global = std::make_unique<OHOS::Rosen::RenderContext>();
+        render_context_global->InitializeEglContext();
+    }
+    rsSurface_->SetRenderContext(render_context_global.get());
 #endif
 
     for (auto &cb : windowCreatebacks_) {

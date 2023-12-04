@@ -134,10 +134,6 @@ private:
     SurfaceState old_;
     SurfaceState new_;
     bool isPointerSurface_ = false;
-
-#ifdef ENABLE_GPU
-    std::unique_ptr<OHOS::Rosen::RenderContext> renderContext_;
-#endif
     OHOS::sptr<OHOS::Rosen::Window> window_;
     OHOS::sptr<OHOS::Rosen::WindowOption> windowOption_;
     std::shared_ptr<WindowOptionExt> windowOptionExt_;
