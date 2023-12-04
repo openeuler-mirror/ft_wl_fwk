@@ -134,6 +134,7 @@ OHOS::sptr<WaylandXdgPopup> WaylandXdgPopup::Create(const OHOS::sptr<WaylandXdgS
     windowOption->SetFocusable(false);
     windowOption->SetTouchable(false);
     auto xdgPopUp = OHOS::sptr<WaylandXdgPopup>(new WaylandXdgPopup(xdgSurface, parentXdgSurface, positioner, id));
+    xdgPopUp->windowOption_ = windowOption;
     WaylandObjectsPool::GetInstance().AddObject(ObjectId(xdgPopUp->WlClient(), xdgPopUp->Id()), xdgPopUp);
     return xdgPopUp;
 }
@@ -171,7 +172,12 @@ void WaylandXdgPopup::SetWindow(OHOS::sptr<OHOS::Rosen::Window> window)
 }
 
 void WaylandXdgPopup::Grab(struct wl_resource *seat, uint32_t serial)
-{}
+{
+    if (windowOption_ != nullptr) {
+        windowOption_->SetFocusable(true);
+        windowOption_->SetTouchable(true);
+    }
+}
 
 void WaylandXdgPopup::Reposition(struct wl_resource *positioner, uint32_t token)
 {}
