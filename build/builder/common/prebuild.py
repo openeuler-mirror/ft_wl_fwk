@@ -61,5 +61,4 @@ def build_deps(output_dir):
             logger.info("build gn success")
         os.chdir(cur_work_dir)
 
-if __name__ == "__main__":
-    sys.exit(main())
+
