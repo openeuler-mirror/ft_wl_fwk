@@ -59,7 +59,7 @@ OHOS::sptr<WaylandSeat> WaylandSeat::Create(struct wl_display *display)
 {
     std::lock_guard<std::mutex> lock(wl_seat_global_mutex_);
     if (display == nullptr) {
-        LOG_ERROR("display is nullptr");
+        LOG_ERROR("Display is nullptr");
         return nullptr;
     }
 
@@ -116,7 +116,7 @@ void WaylandSeat::Bind(struct wl_client *client, uint32_t version, uint32_t id)
 {
     auto object = OHOS::sptr<WaylandSeatObject>(new WaylandSeatObject(client, version, id));
     if (object == nullptr) {
-        LOG_ERROR("no memory");
+        LOG_ERROR("No memory");
         return;
     }
 
@@ -252,7 +252,7 @@ void WaylandSeat::SendNewCapabilities()
     uint32_t oldCaps = caps_;
     GetCapabilities();
     if (oldCaps == caps_) {
-        LOG_INFO("caps unchange, no need to report");
+        LOG_INFO("Caps unchange, no need to report");
         return;
     } else {
         for (auto it = seatResourcesMap_.begin(); it != seatResourcesMap_.end(); ++it) {
@@ -341,7 +341,7 @@ void WaylandSeatObject::GetPointer(uint32_t id)
 {
     auto pointer = WaylandPointer::Create(WlClient(), wl_resource_get_version(WlResource()), id);
     if (pointer == nullptr) {
-        LOG_ERROR("no memory");
+        LOG_ERROR("No memory");
         return;
     }
 
@@ -352,7 +352,7 @@ void WaylandSeatObject::GetKeyboard(uint32_t id)
 {
     auto keyboard = WaylandKeyboard::Create(WlClient(), wl_resource_get_version(WlResource()), id);
     if (keyboard == nullptr) {
-        LOG_ERROR("no memory");
+        LOG_ERROR("No memory");
         return;
     }
     keyboardResourcesMap_[WlClient()].emplace_back(keyboard);

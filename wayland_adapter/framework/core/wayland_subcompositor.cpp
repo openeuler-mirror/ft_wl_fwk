@@ -39,7 +39,7 @@ void IWaylandSubCompositor::GetSubSurface(struct wl_client *client, struct wl_re
 OHOS::sptr<WaylandSubCompositor> WaylandSubCompositor::Create(struct wl_display *display)
 {
     if (display == nullptr) {
-        LOG_ERROR("display is nullptr");
+        LOG_ERROR("Display is nullptr");
         return nullptr;
     }
 
@@ -55,7 +55,7 @@ void WaylandSubCompositor::Bind(struct wl_client *client, uint32_t version, uint
 {
     auto object = OHOS::sptr<WaylandSubCompositorObject>(new WaylandSubCompositorObject(client, version, id));
     if (object == nullptr) {
-        LOG_ERROR("no memory");
+        LOG_ERROR("No memory");
         return;
     }
     WaylandObjectsPool::GetInstance().AddObject(ObjectId(object->WlClient(), object->Id()), object);
@@ -71,7 +71,7 @@ void WaylandSubCompositorObject::CreateSubSurface(uint32_t id, struct wl_resourc
 {
     auto subSurface = WaylandSubSurface::Create(WlClient(), wl_resource_get_version(WlResource()), id, surface, parent);
     if (subSurface == nullptr) {
-        LOG_ERROR("no memory");
+        LOG_ERROR("No memory");
         return;
     }
 }
