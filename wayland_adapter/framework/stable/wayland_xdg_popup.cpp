@@ -135,6 +135,7 @@ OHOS::sptr<WaylandXdgPopup> WaylandXdgPopup::Create(const OHOS::sptr<WaylandXdgS
     windowOption->SetTouchable(false);
     auto xdgPopUp = OHOS::sptr<WaylandXdgPopup>(new WaylandXdgPopup(xdgSurface, parentXdgSurface, positioner, id));
     xdgPopUp->windowOption_ = windowOption;
+    xdgPopUp->rect_ = rect;
     WaylandObjectsPool::GetInstance().AddObject(ObjectId(xdgPopUp->WlClient(), xdgPopUp->Id()), xdgPopUp);
     return xdgPopUp;
 }
@@ -162,7 +163,7 @@ void WaylandXdgPopup::SendConfigure()
 
 void WaylandXdgPopup::SetRect(OHOS::Rosen::Rect rect)
 {
-    rect_ = rect;
+    // do not use real rect, use rect set by the application
     SendConfigure();
 }
 
